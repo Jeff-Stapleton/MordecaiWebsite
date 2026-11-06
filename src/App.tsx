@@ -167,24 +167,22 @@ function LandingPage() {
               intended to clear the game at level 1—and attributes, granular
               skills, feats, and curated loot make every build your own.
             </p>
-            <div className="hero__actions" aria-label="Example promotional links">
+            <div className="hero__actions" aria-label="Project Mordecai links">
               <a
                 className="button button--primary"
-                href="https://example.com/project-mordecai-wishlist"
+                href="https://mordecai-game-builds.t3.tigrisfiles.io/playtest/ProjectMordecai-Windows-latest.zip"
               >
-                Wishlist
-                <span>Example link</span>
+                Download game
+                <span>Windows playtest</span>
               </a>
-              <a
-                className="button button--secondary"
-                href="https://example.com/project-mordecai-follow"
-              >
-                Follow development
-                <span>Example link</span>
+              <a className="button button--secondary" href="#systems">
+                Explore systems
+                <span>Design brief</span>
               </a>
             </div>
-            <p className="placeholder-note">
-              Placeholder destinations for future store and community links.
+            <p className="playtest-note">
+              <strong>Windows playtest · ~1.6 GB · In development.</strong>{' '}
+              Download the zip, unzip it, and run the game.
             </p>
           </div>
           <HeroDiorama />

@@ -401,10 +401,14 @@ p {
   color: var(--tt-ink);
 }
 
-.placeholder-note {
+.playtest-note {
+  max-width: 640px;
   margin: 16px 0 0;
   color: var(--tt-ink-muted);
   font-size: 14px;
+}
+
+.playtest-note strong {
   font-weight: 700;
 }
 
@@ -1132,7 +1136,7 @@ p {
   color: var(--tt-text);
 }
 
-[data-theme='high-contrast'] .placeholder-note,
+[data-theme='high-contrast'] .playtest-note,
 [data-theme='high-contrast'] .section-heading > p,
 [data-theme='high-contrast'] .not-found p {
   color: var(--tt-text-muted);

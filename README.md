@@ -42,6 +42,12 @@ The production output is written to `dist/`.
 Nginx falls back to `index.html`, so direct requests to React Router routes work
 in the production container.
 
+## Playtest download
+
+The landing-page hero links to the public Windows playtest package:
+[download the latest build](https://mordecai-game-builds.t3.tigrisfiles.io/playtest/ProjectMordecai-Windows-latest.zip).
+This stable URL is intended to keep pointing to the current playtest build.
+
 ## Fly.io deployment
 
 The repository includes a multi-stage `Dockerfile`, an nginx configuration, and
@@ -101,5 +107,5 @@ Then open `http://localhost:8080`.
 This first pass is intentionally limited to routing, shared layout, responsive
 page scaffolding, the Tin Tally token bridge, and Fly.io hosting configuration.
 It does not include a CMS, blog, authentication, analytics, or a production
-deployment. Promotional CTA destinations are visibly marked as examples until
-official store and community URLs exist.
+storefront release. The public Windows download is an in-development playtest;
+future store and community links are not yet included.
