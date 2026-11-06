@@ -8,9 +8,14 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom'
+import { progressStatusReviewedOn } from './data/systemProgress'
 import { systemBySlug, systems } from './data/systems'
 
 type Theme = 'diorama' | 'high-contrast'
+
+function systemPath(slug: string) {
+  return `/${slug}`
+}
 
 function TallyMark({ decorative = false }: { decorative?: boolean }) {
   return (
@@ -89,7 +94,7 @@ function SiteShell() {
             {systems.map((system) => (
               <NavLink
                 key={system.slug}
-                to={`/systems/${system.slug}`}
+                to={systemPath(system.slug)}
                 className={({ isActive }) => (isActive ? 'is-active' : undefined)}
               >
                 {system.navLabel}
@@ -254,7 +259,7 @@ function LandingPage() {
             {systems.map((system, index) => (
               <Link
                 className="system-card"
-                to={`/systems/${system.slug}`}
+                to={systemPath(system.slug)}
                 key={system.slug}
                 style={{ '--card-accent': system.accent } as React.CSSProperties}
               >
@@ -281,6 +286,14 @@ function SystemPage() {
   if (!system) {
     return <NotFoundPage />
   }
+
+  const features = system.progress.categories.flatMap(
+    (category) => category.features,
+  )
+  const shippedCount = features.filter(
+    (feature) => feature.stage === 'shipped',
+  ).length
+  const plannedCount = features.length - shippedCount
 
   return (
     <article
@@ -310,31 +323,139 @@ function SystemPage() {
       </header>
 
       <div className="page-frame system-content">
-        <div className="content-note">
-          <strong>Scaffold preview</strong>
-          <span>
-            Content reflects the current design brief and will evolve with the
-            game.
-          </span>
-        </div>
-        <div className="detail-grid">
-          {system.sections.map((section, index) => (
-            <section className="detail-card" key={section.title}>
-              <span className="detail-card__index">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <h2>{section.title}</h2>
-              <p>{section.body}</p>
-              {section.items && (
-                <ul>
-                  {section.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          ))}
-        </div>
+        <section className="progress-overview" aria-labelledby="progress-title">
+          <header className="progress-overview__header">
+            <div>
+              <span className="section-label">Development record</span>
+              <h2 id="progress-title">What is playable—and what comes next</h2>
+              <p>{system.progress.intro}</p>
+            </div>
+            <dl className="progress-totals" aria-label="Feature totals">
+              <div>
+                <dt>Shipped / in playtest</dt>
+                <dd>{shippedCount}</dd>
+              </div>
+              <div>
+                <dt>Designed / planned</dt>
+                <dd>{plannedCount}</dd>
+              </div>
+            </dl>
+          </header>
+
+          <div className="progress-key">
+            <p>
+              <strong>Status reviewed {progressStatusReviewedOn}.</strong>{' '}
+              Shipped items are implemented in the current build; descriptions
+              call out known limits. Planned items remain visible so progress is
+              easy to follow.
+            </p>
+            <ul aria-label="Feature status key">
+              <li>
+                <span
+                  className="feature-status feature-status--shipped"
+                  aria-hidden="true"
+                >
+                  ✓
+                </span>
+                Shipped / in playtest
+              </li>
+              <li>
+                <span
+                  className="feature-status feature-status--planned"
+                  aria-hidden="true"
+                >
+                  ○
+                </span>
+                Designed / planned
+              </li>
+            </ul>
+          </div>
+
+          <div className="progress-category-list">
+            {system.progress.categories.map((category, categoryIndex) => {
+              const categoryShipped = category.features.filter(
+                (feature) => feature.stage === 'shipped',
+              ).length
+
+              return (
+                <section className="progress-category" key={category.title}>
+                  <header className="progress-category__header">
+                    <span className="progress-category__index">
+                      {String(categoryIndex + 1).padStart(2, '0')}
+                    </span>
+                    <div>
+                      <h3>{category.title}</h3>
+                      <p>{category.summary}</p>
+                    </div>
+                    <span className="progress-category__count">
+                      {categoryShipped}/{category.features.length} shipped
+                    </span>
+                  </header>
+                  <ul className="feature-list">
+                    {category.features.map((feature) => {
+                      const isShipped = feature.stage === 'shipped'
+                      const statusLabel = isShipped
+                        ? 'Shipped / in playtest'
+                        : 'Designed / planned'
+
+                      return (
+                        <li
+                          className={`feature-item feature-item--${feature.stage}`}
+                          key={feature.title}
+                        >
+                          <span
+                            className={`feature-status feature-status--${feature.stage}`}
+                            aria-hidden="true"
+                          >
+                            {isShipped ? '✓' : '○'}
+                          </span>
+                          <div>
+                            <div className="feature-item__heading">
+                              <h4>{feature.title}</h4>
+                              <span className="feature-item__label">
+                                {statusLabel}
+                              </span>
+                            </div>
+                            <p>{feature.description}</p>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </section>
+              )
+            })}
+          </div>
+        </section>
+
+        <section className="system-brief" aria-labelledby="brief-title">
+          <div className="system-brief__heading">
+            <span className="section-label">Design direction</span>
+            <h2 id="brief-title">The larger promise</h2>
+            <p>
+              These field notes preserve the system’s intended shape while the
+              development record above tracks what is real today.
+            </p>
+          </div>
+          <div className="detail-grid">
+            {system.sections.map((section, index) => (
+              <section className="detail-card" key={section.title}>
+                <span className="detail-card__index">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3>{section.title}</h3>
+                <p>{section.body}</p>
+                {section.items && (
+                  <ul>
+                    {section.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            ))}
+          </div>
+        </section>
         <nav className="next-system" aria-label="Continue through core systems">
           <span>Continue the record</span>
           {(() => {
@@ -343,7 +464,7 @@ function SystemPage() {
             )
             const next = systems[(currentIndex + 1) % systems.length]
             return (
-              <Link to={`/systems/${next.slug}`}>
+              <Link to={systemPath(next.slug)}>
                 {next.title}
                 <span aria-hidden="true">→</span>
               </Link>
@@ -373,6 +494,7 @@ export default function App() {
     <Routes>
       <Route element={<SiteShell />}>
         <Route index element={<LandingPage />} />
+        <Route path=":slug" element={<SystemPage />} />
         <Route path="systems/:slug" element={<SystemPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
