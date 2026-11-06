@@ -1,11 +1,18 @@
+import {
+  progressBySystem,
+  type SystemProgress,
+  type SystemSlug,
+} from './systemProgress'
+
 export type SystemPage = {
-  slug: string
+  slug: SystemSlug
   navLabel: string
   title: string
   eyebrow: string
   oneLiner: string
   accent: string
   highlights: string[]
+  progress: SystemProgress
   sections: Array<{
     title: string
     body: string
@@ -23,6 +30,7 @@ export const systems: SystemPage[] = [
       'Read the fight, manage stamina, and turn precise defense into decisive openings.',
     accent: 'var(--tt-danger)',
     highlights: ['Twin-stick control', 'Tiered stamina', 'Posture openings'],
+    progress: progressBySystem.combat,
     sections: [
       {
         title: 'Aim while you move',
@@ -51,6 +59,7 @@ export const systems: SystemPage[] = [
       'Build mastery through nine attributes, granular skills, and feats earned by what you accomplish.',
     accent: 'var(--tt-spell-points)',
     highlights: ['9 attributes', 'Skills rank to 20', 'Earned feats'],
+    progress: progressBySystem.progression,
     sections: [
       {
         title: 'Nine attributes',
@@ -58,7 +67,7 @@ export const systems: SystemPage[] = [
       },
       {
         title: 'Everything practiced can matter',
-        body: 'The current design contains 42 granular skills across weapon, defense and armor, movement and exploration, utility and interaction, and magic categories.',
+        body: 'The current catalog spans weapon, defense and armor, movement and exploration, utility and interaction, and magic categories.',
       },
       {
         title: 'Techniques mark mastery',
@@ -79,6 +88,7 @@ export const systems: SystemPage[] = [
       'Find believable drops, curated magic items, and upgrade keys without inventory busywork.',
     accent: 'var(--tt-good)',
     highlights: ['Curated loot', '6 rarity tiers', 'Unlimited carry'],
+    progress: progressBySystem.items,
     sections: [
       {
         title: 'Drops belong in the world',
@@ -107,6 +117,7 @@ export const systems: SystemPage[] = [
       'Turn expedition spoils into a stronger village that provisions future journeys and opens new routes.',
     accent: 'var(--tt-biome-searing)',
     highlights: ['Village services', 'Building tiers', 'Active initiatives'],
+    progress: progressBySystem.town,
     sections: [
       {
         title: 'The village is the crafting system',
@@ -135,6 +146,7 @@ export const systems: SystemPage[] = [
       'Explore six compact diorama biomes, gain traversal tools, and return to old paths with new possibilities.',
     accent: 'var(--tt-biome-verdant)',
     highlights: ['6 biomes', 'Fixed diorama view', 'Impermanence vs Control'],
+    progress: progressBySystem.world,
     sections: [
       {
         title: 'Six compact biomes',
@@ -163,6 +175,7 @@ export const systems: SystemPage[] = [
       'Learn readable enemy roles, break encounter synergies, and master bosses with distinct rules.',
     accent: 'var(--tt-rarity-red)',
     highlights: ['Readable roles', '6 enemy tiers', 'Distinct boss phases'],
+    progress: progressBySystem.enemies,
     sections: [
       {
         title: 'Roles create encounters',
@@ -184,4 +197,6 @@ export const systems: SystemPage[] = [
   },
 ]
 
-export const systemBySlug = new Map(systems.map((system) => [system.slug, system]))
+export const systemBySlug = new Map<string, SystemPage>(
+  systems.map((system) => [system.slug, system]),
+)
