@@ -839,7 +839,6 @@ p {
 }
 
 .system-hero {
-  --page-accent: var(--tt-good);
   position: relative;
   overflow: hidden;
   border-bottom: var(--tt-stroke-outline) solid var(--tt-ink);

@@ -115,7 +115,7 @@ function SiteShell() {
       <footer className="site-footer">
         <div className="footer-inner">
           <div>
-            <span className="footer-kicker">Count remains open</span>
+            <span className="footer-kicker">In development</span>
             <strong>Project Mordecai</strong>
           </div>
           <p>
