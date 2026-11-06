@@ -1,3 +1,5 @@
+import { systemFeatureInventory } from './systemFeatureInventory'
+
 export type SystemSlug =
   | 'combat'
   | 'progression'
@@ -8,16 +10,34 @@ export type SystemSlug =
 
 export type FeatureStage = 'shipped' | 'planned'
 
+export type DetailedFeatureStage =
+  | 'playtest'
+  | 'implemented'
+  | 'recovery'
+  | 'planned'
+  | 'uncertain'
+
 export type ProgressFeature = {
   title: string
   description: string
   stage: FeatureStage
 }
 
+export type DetailedFeature = {
+  id: string
+  title: string
+  description: string
+  stage: DetailedFeatureStage
+  evidence: string
+  sources: string[]
+  group?: string
+}
+
 export type ProgressCategory = {
   title: string
   summary: string
   features: ProgressFeature[]
+  details?: DetailedFeature[]
   /**
    * Maintainer-only pointers to the ProjectMordecai sources used for this
    * snapshot. These are intentionally not rendered as public ticket lists.
@@ -32,7 +52,7 @@ export type SystemProgress = {
 
 export const progressStatusReviewedOn = '6 November 2026'
 
-export const progressBySystem = {
+const progressOverviewBySystem = {
   combat: {
     intro:
       'The current playtest proves the close-range fight, defensive inputs, HUD, and death loop. Magic, aiming, and deeper combat tuning are still being connected.',
@@ -761,3 +781,17 @@ export const progressBySystem = {
     ],
   },
 } satisfies Record<SystemSlug, SystemProgress>
+
+export const progressBySystem = Object.fromEntries(
+  Object.entries(progressOverviewBySystem).map(([slug, progress]) => [
+    slug,
+    {
+      ...progress,
+      categories: progress.categories.map((category) => ({
+        ...category,
+        details:
+          systemFeatureInventory[slug as SystemSlug][category.title] ?? [],
+      })),
+    },
+  ]),
+) as Record<SystemSlug, SystemProgress>
