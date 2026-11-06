@@ -12,6 +12,7 @@ import {
   progressStatusReviewedOn,
   type DetailedFeatureStage,
   type MechanicSupport,
+  type ProgressVisualState,
 } from './data/systemProgress'
 import { systemBySlug, systems } from './data/systems'
 
@@ -23,41 +24,73 @@ function systemPath(slug: string) {
 
 const detailedStatus: Record<
   DetailedFeatureStage,
-  { label: string; shortLabel: string; mark: string }
+  {
+    label: string
+    shortLabel: string
+    mark: string
+    visualState: ProgressVisualState
+  }
 > = {
   playtest: {
-    label: 'Verified in playtest',
-    shortLabel: 'Playtest',
+    label: 'Done—verified in playtest',
+    shortLabel: 'Done',
     mark: '✓',
+    visualState: 'done',
   },
   implemented: {
-    label: 'Implemented—not playtest verified',
-    shortLabel: 'Implemented',
+    label: 'Partially implemented—not playtest verified',
+    shortLabel: 'Partial',
     mark: '◆',
+    visualState: 'partial',
   },
   recovery: {
-    label: 'Implemented—recovery needed',
-    shortLabel: 'Recovery',
+    label: 'Known broken—recovery needed',
+    shortLabel: 'Broken',
     mark: '!',
+    visualState: 'broken',
   },
   planned: {
-    label: 'Designed / planned',
-    shortLabel: 'Planned',
+    label: 'Todo / planned',
+    shortLabel: 'Todo',
     mark: '○',
+    visualState: 'todo',
   },
   uncertain: {
-    label: 'Source state uncertain',
-    shortLabel: 'Uncertain',
+    label: 'Unknown / source uncertain',
+    shortLabel: 'Unknown',
     mark: '?',
+    visualState: 'unknown',
   },
 }
 
-const mechanicSupportLabel: Record<MechanicSupport, string> = {
-  playtest: 'Playtest evidence',
-  implemented: 'Implemented profile',
-  designed: 'Designed mechanic',
-  example: 'Design example',
-  unspecified: 'Not yet specified',
+const mechanicSupport: Record<
+  MechanicSupport,
+  { label: string; visualState: ProgressVisualState }
+> = {
+  playtest: {
+    label: 'Done · playtest evidence',
+    visualState: 'done',
+  },
+  implemented: {
+    label: 'Partial · implemented profile',
+    visualState: 'partial',
+  },
+  designed: {
+    label: 'Todo · designed mechanic',
+    visualState: 'todo',
+  },
+  example: {
+    label: 'Todo · design example',
+    visualState: 'todo',
+  },
+  unspecified: {
+    label: 'Unknown · not specified',
+    visualState: 'unknown',
+  },
+  broken: {
+    label: 'Broken · known issue',
+    visualState: 'broken',
+  },
 }
 
 function TallyMark({ decorative = false }: { decorative?: boolean }) {
@@ -400,7 +433,8 @@ function SystemPage() {
               ).map(([stage, status]) => (
                 <li key={stage}>
                   <span
-                    className={`feature-status feature-status--${stage}`}
+                    className="feature-status"
+                    data-progress-state={status.visualState}
                     aria-hidden="true"
                   >
                     {status.mark}
@@ -444,6 +478,9 @@ function SystemPage() {
                         {category.features.map((feature) => (
                           <span
                             className={`overview-feature overview-feature--${feature.stage}`}
+                            data-progress-state={
+                              feature.stage === 'shipped' ? 'done' : 'todo'
+                            }
                             key={feature.title}
                           >
                             <span aria-hidden="true">
@@ -465,7 +502,8 @@ function SystemPage() {
                         ).map(([stage, status]) =>
                           statusCounts[stage] ? (
                             <span
-                              className={`status-count status-count--${stage}`}
+                              className="status-count"
+                              data-progress-state={status.visualState}
                               key={stage}
                             >
                               {statusCounts[stage]} {status.shortLabel}
@@ -521,10 +559,12 @@ function SystemPage() {
                         return (
                           <li
                             className={`feature-item feature-item--${feature.stage}`}
+                            data-progress-state={status.visualState}
                             key={feature.id}
                           >
                             <span
-                              className={`feature-status feature-status--${feature.stage}`}
+                              className="feature-status"
+                              data-progress-state={status.visualState}
                               aria-hidden="true"
                             >
                               {status.mark}
@@ -565,28 +605,30 @@ function SystemPage() {
                                           {group.summary && <p>{group.summary}</p>}
                                         </header>
                                         <ol className="mechanic-list">
-                                          {group.items.map((mechanic, index) => (
-                                            <li
-                                              className={`mechanic-item mechanic-item--${mechanic.support}${
-                                                mechanic.milestone
-                                                  ? ' mechanic-item--milestone'
-                                                  : ''
-                                              }`}
-                                              key={`${mechanic.label}-${index}`}
-                                            >
-                                              <div>
-                                                <strong>{mechanic.label}</strong>
-                                                <span>
-                                                  {
-                                                    mechanicSupportLabel[
-                                                      mechanic.support
-                                                    ]
-                                                  }
-                                                </span>
-                                              </div>
-                                              <p>{mechanic.description}</p>
-                                            </li>
-                                          ))}
+                                          {group.items.map((mechanic, index) => {
+                                            const support =
+                                              mechanicSupport[mechanic.support]
+
+                                            return (
+                                              <li
+                                                className={`mechanic-item${
+                                                  mechanic.milestone
+                                                    ? ' mechanic-item--milestone'
+                                                    : ''
+                                                }`}
+                                                data-progress-state={
+                                                  support.visualState
+                                                }
+                                                key={`${mechanic.label}-${index}`}
+                                              >
+                                                <div>
+                                                  <strong>{mechanic.label}</strong>
+                                                  <span>{support.label}</span>
+                                                </div>
+                                                <p>{mechanic.description}</p>
+                                              </li>
+                                            )
+                                          })}
                                         </ol>
                                       </section>
                                     ))}

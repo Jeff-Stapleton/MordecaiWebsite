@@ -1084,9 +1084,30 @@ p {
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  color: var(--tt-ink);
   font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
+}
+
+[data-progress-state='done'] {
+  --progress-status-color: var(--tt-status-done);
+}
+
+[data-progress-state='todo'] {
+  --progress-status-color: var(--tt-status-todo);
+}
+
+[data-progress-state='partial'] {
+  --progress-status-color: var(--tt-status-partial);
+}
+
+[data-progress-state='unknown'] {
+  --progress-status-color: var(--tt-status-unknown);
+}
+
+[data-progress-state='broken'] {
+  --progress-status-color: var(--tt-status-broken);
 }
 
 .progress-category-list {
@@ -1203,12 +1224,8 @@ p {
   color: var(--tt-lip);
 }
 
-.overview-feature--shipped > span {
-  color: var(--tt-heal);
-}
-
-.overview-feature--planned > span {
-  color: var(--tt-good);
+.overview-feature > span {
+  color: var(--progress-status-color);
 }
 
 .status-count {
@@ -1223,24 +1240,8 @@ p {
   white-space: nowrap;
 }
 
-.status-count--playtest {
-  border-color: var(--tt-heal);
-}
-
-.status-count--implemented {
-  border-color: var(--tt-rarity-blue);
-}
-
-.status-count--recovery {
-  border-color: var(--tt-danger);
-}
-
-.status-count--planned {
-  border-color: var(--tt-good);
-}
-
-.status-count--uncertain {
-  border-color: var(--tt-rarity-purple);
+.status-count[data-progress-state] {
+  border-color: var(--progress-status-color);
 }
 
 .progress-category__toggle {
@@ -1304,6 +1305,8 @@ p {
 }
 
 .feature-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1314,26 +1317,19 @@ p {
   grid-template-columns: auto minmax(0, 1fr);
   gap: 16px;
   padding: 22px 28px;
+  border-left: 7px solid var(--progress-status-color);
 }
 
 .feature-item + .feature-item {
   border-top: 2px solid var(--tt-enamel-shade);
 }
 
-.feature-item--playtest {
-  background: color-mix(in srgb, var(--tt-heal) 9%, var(--tt-enamel));
-}
-
-.feature-item--implemented {
-  background: color-mix(in srgb, var(--tt-rarity-blue) 8%, var(--tt-enamel));
-}
-
-.feature-item--recovery {
-  background: color-mix(in srgb, var(--tt-danger) 7%, var(--tt-enamel));
-}
-
-.feature-item--uncertain {
-  background: color-mix(in srgb, var(--tt-rarity-purple) 7%, var(--tt-enamel));
+.feature-item[data-progress-state] {
+  background: color-mix(
+    in srgb,
+    var(--progress-status-color) 7%,
+    var(--tt-enamel)
+  );
 }
 
 .feature-status {
@@ -1351,25 +1347,8 @@ p {
   line-height: 1;
 }
 
-.feature-status--playtest,
-.feature-status--shipped {
-  background: var(--tt-heal);
-}
-
-.feature-status--implemented {
-  background: var(--tt-rarity-blue);
-}
-
-.feature-status--recovery {
-  background: var(--tt-danger);
-}
-
-.feature-status--planned {
-  background: var(--tt-enamel);
-}
-
-.feature-status--uncertain {
-  background: var(--tt-rarity-purple);
+.feature-status[data-progress-state] {
+  background: var(--progress-status-color);
 }
 
 .feature-item__heading {
@@ -1381,6 +1360,7 @@ p {
 
 .feature-item h4 {
   margin: 0;
+  color: var(--tt-ink);
   font-family: var(--tt-font-display);
   font-size: 21px;
   line-height: 1.25;
@@ -1406,7 +1386,7 @@ p {
   white-space: nowrap;
 }
 
-.feature-item--playtest .feature-item__label {
+.feature-item[data-progress-state='done'] .feature-item__label {
   color: color-mix(in srgb, var(--tt-plate) 82%, var(--tt-ink));
 }
 
@@ -1525,7 +1505,7 @@ p {
 
 .mechanic-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1537,36 +1517,16 @@ p {
   border-left: 5px solid var(--tt-enamel-shade);
 }
 
-.mechanic-item:nth-child(even) {
-  border-left-width: 7px;
-}
-
-.mechanic-item:nth-child(n + 3) {
+.mechanic-item:nth-child(n + 2) {
   border-top: 2px solid var(--tt-enamel-shade);
 }
 
-.mechanic-item--playtest {
-  border-left-color: var(--tt-heal);
-}
-
-.mechanic-item--implemented {
-  border-left-color: var(--tt-rarity-blue);
-}
-
-.mechanic-item--designed {
-  border-left-color: var(--tt-good);
-}
-
-.mechanic-item--example {
-  border-left-color: var(--tt-rarity-purple);
-}
-
-.mechanic-item--unspecified {
-  border-left-color: var(--tt-ink-muted);
+.mechanic-item[data-progress-state] {
+  border-left-color: var(--progress-status-color);
 }
 
 .mechanic-item--milestone {
-  background: color-mix(in srgb, var(--tt-good) 10%, var(--tt-enamel));
+  background: color-mix(in srgb, var(--page-accent) 8%, var(--tt-enamel));
 }
 
 .mechanic-item > div {

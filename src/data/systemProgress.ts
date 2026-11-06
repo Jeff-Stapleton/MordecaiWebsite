@@ -17,12 +17,20 @@ export type DetailedFeatureStage =
   | 'planned'
   | 'uncertain'
 
+export type ProgressVisualState =
+  | 'done'
+  | 'todo'
+  | 'partial'
+  | 'unknown'
+  | 'broken'
+
 export type MechanicSupport =
   | 'playtest'
   | 'implemented'
   | 'designed'
   | 'example'
   | 'unspecified'
+  | 'broken'
 
 export type MechanicItem = {
   label: string

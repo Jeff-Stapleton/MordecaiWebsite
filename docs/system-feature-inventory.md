@@ -19,8 +19,11 @@ named spells from being counted twice.
 
 - Nested mechanics describe an existing feature; they do not change its
   progress status or any page total.
-- `Implemented profile`, `Playtest evidence`, `Designed mechanic`, `Design
-  example`, and `Not yet specified` describe the nested fact—not the parent.
+- Nested labels combine implementation state with evidence specificity:
+  `Done · playtest evidence`, `Partial · implemented profile`, `Todo ·
+  designed mechanic`, `Todo · design example`, `Unknown · not specified`, and
+  `Broken · known issue`. An implemented profile proves code or content exists;
+  it does not prove the complete player-facing feature works.
 - Weapon profile numbers are shown only where implementation stories provide
   them, and are labeled as initial tuning placeholders.
 - Skill ranks always render ranks 1–20 when a rank source exists. Ranks 5, 10,
@@ -35,13 +38,17 @@ named spells from being counted twice.
 
 ## Status rules
 
-| Status | Use it when |
+The same five-state color mapping applies to named features and every nested
+mechanic or rank row. Text labels remain visible, so color is never the only
+status signal.
+
+| State and left bar | Use it when |
 | --- | --- |
-| Verified in playtest | The current packaged build passed a real-input player-path check. |
-| Implemented—not playtest verified | Code, assets, and/or story automation support the feature, but the current package has not been verified. |
-| Implemented—recovery needed | The implementation exists, but a current issue or packaged check identifies a player-facing gap. |
-| Designed / planned | A current spec, roadmap, or story names the feature without implementation evidence. |
-| Source state uncertain | Sources conflict or do not support a reliable claim. |
+| Done — green | The specific feature or nested fact passed the relevant packaged playtest or otherwise has direct completion evidence. |
+| Todo / planned — blue | A current spec, roadmap, or story designs the feature or mechanic without implementation evidence. |
+| Partially implemented — yellow | Code, assets, a profile, or story automation exists, but the complete player-facing feature is not playtest-verified. |
+| Unknown — grey | Sources conflict or do not specify enough detail to support an implementation claim. “Not yet specified” belongs here, not in Todo. |
+| Known broken — red | A current issue or packaged check identifies a player-facing failure. This takes precedence over partial or implemented evidence. |
 
 Never promote a child because its parent system or epic is complete. Update the
 individual entry and its evidence only after checking that feature.

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Locator } from '@playwright/test'
 import { systemFeatureInventory } from '../src/data/systemFeatureInventory'
 
 const categoryTitles = {
@@ -43,6 +43,30 @@ const stableFeatureTotals = {
   world: 67,
   enemies: 45,
 } as const
+
+async function expectSingleColumn(list: Locator) {
+  const columns = await list.evaluate(
+    (element) => getComputedStyle(element).gridTemplateColumns,
+  )
+  expect(columns.trim().split(/\s+/)).toHaveLength(1)
+
+  const items = list.locator(':scope > li')
+  const count = await items.count()
+  expect(count).toBeGreaterThan(0)
+
+  let previousBottom = Number.NEGATIVE_INFINITY
+  let expectedX: number | undefined
+  for (let index = 0; index < count; index += 1) {
+    const box = await items.nth(index).boundingBox()
+    expect(box).not.toBeNull()
+    if (!box) continue
+
+    expectedX ??= box.x
+    expect(Math.abs(box.x - expectedX)).toBeLessThan(1)
+    expect(box.y).toBeGreaterThanOrEqual(previousBottom - 1)
+    previousBottom = box.y + box.height
+  }
+}
 
 test('inventory covers every current category with maintainable evidence', () => {
   const allIds = new Set<string>()
@@ -174,6 +198,33 @@ test('all six systems expose useful nested depth without changing totals', () =>
       .flat()
       .filter((feature) => feature.mechanics).length
     expect(nestedCount, `${system} has no nested mechanics`).toBeGreaterThan(0)
+  }
+})
+
+test('feature and mechanic lists stay single-column on every system page', async ({
+  page,
+}) => {
+  for (const viewport of [
+    { width: 1440, height: 1200 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport)
+
+    for (const system of Object.keys(categoryTitles)) {
+      await page.goto(`/${system}`)
+
+      const category = page
+        .locator('details.progress-category')
+        .filter({ has: page.locator('details.feature-mechanics') })
+        .first()
+      await category.locator(':scope > summary').click()
+
+      await expectSingleColumn(category.locator('.feature-list'))
+
+      const mechanics = category.locator('details.feature-mechanics').first()
+      await mechanics.locator(':scope > summary').click()
+      await expectSingleColumn(mechanics.locator('.mechanic-list').first())
+    }
   }
 })
 
@@ -311,6 +362,115 @@ test('weapons and spells expose individual statuses and evidence', async ({
       'Why this status:',
     )
   }
+})
+
+test('five-state bars stay consistent in both themes and broken evidence wins', async ({
+  page,
+}) => {
+  const themeColors = {
+    diorama: {
+      done: 'rgb(76, 203, 110)',
+      todo: 'rgb(107, 184, 255)',
+      partial: 'rgb(255, 194, 61)',
+      unknown: 'rgb(138, 148, 144)',
+      broken: 'rgb(255, 90, 60)',
+    },
+    'high-contrast': {
+      done: 'rgb(124, 255, 170)',
+      todo: 'rgb(156, 207, 255)',
+      partial: 'rgb(255, 212, 92)',
+      unknown: 'rgb(184, 191, 188)',
+      broken: 'rgb(255, 138, 112)',
+    },
+  } as const
+
+  const assertBars = async (
+    locator: Locator,
+    expected: (typeof themeColors)[keyof typeof themeColors],
+  ) => {
+    const bars = await locator.evaluateAll((elements) =>
+      elements.map((element) => ({
+        state: element.getAttribute('data-progress-state'),
+        color: getComputedStyle(element).borderLeftColor,
+      })),
+    )
+    expect(bars.length).toBeGreaterThan(0)
+
+    for (const bar of bars) {
+      expect(bar.state).not.toBeNull()
+      expect(bar.color).toBe(expected[bar.state as keyof typeof expected])
+    }
+  }
+
+  for (const [theme, expected] of Object.entries(themeColors)) {
+    await page.goto('/combat')
+    if (theme === 'high-contrast') {
+      await page.getByRole('button', { name: 'High contrast' }).click()
+    }
+
+    const key = page.locator('.progress-key')
+    for (const [state, color] of Object.entries(expected)) {
+      const swatch = key.locator(`[data-progress-state="${state}"]`)
+      await expect(swatch).toHaveCount(1)
+      await expect(swatch).toHaveCSS('background-color', color)
+    }
+    await expect(key).toContainText('Done')
+    await expect(key).toContainText('Todo')
+    await expect(key).toContainText('Partial')
+    await expect(key).toContainText('Unknown')
+    await expect(key).toContainText('Broken')
+    if (theme === 'high-contrast') {
+      await expect(key.locator('li').first()).toHaveCSS('color', 'rgb(0, 0, 0)')
+    }
+
+    for (const system of Object.keys(categoryTitles)) {
+      await page.goto(`/${system}`)
+      await assertBars(page.locator('.feature-item'), expected)
+      await assertBars(page.locator('.mechanic-item'), expected)
+      if (theme === 'high-contrast') {
+        await expect(page.locator('.feature-item h4').first()).toHaveCSS(
+          'color',
+          'rgb(0, 0, 0)',
+        )
+      }
+    }
+  }
+
+  await page.goto('/combat')
+  const magic = page
+    .locator('details.progress-category')
+    .filter({ hasText: 'Magic & status' })
+  await magic.locator(':scope > summary').click()
+
+  const fireball = magic.locator('.feature-item').filter({
+    has: page.getByRole('heading', { name: 'Fireball', exact: true }),
+  })
+  await expect(fireball).toHaveAttribute('data-progress-state', 'broken')
+  await fireball.locator('summary').click()
+  await expect(
+    fireball.locator('.mechanic-item').filter({ hasText: 'Current recovery gap' }),
+  ).toHaveAttribute('data-progress-state', 'broken')
+  await expect(
+    fireball
+      .locator('.mechanic-item')
+      .filter({ hasText: 'Implemented Rank 1 profile' }),
+  ).toHaveAttribute('data-progress-state', 'partial')
+  await expect(
+    fireball.locator('.mechanic-item').filter({ hasText: 'Design conflict' }),
+  ).toHaveAttribute('data-progress-state', 'unknown')
+  await expect(
+    fireball
+      .locator('.mechanic-item')
+      .filter({ has: page.getByText('Rank 5 · Milestone', { exact: true }) }),
+  ).toHaveAttribute('data-progress-state', 'todo')
+
+  const restoration = magic.locator('.feature-item').filter({
+    has: page.getByRole('heading', { name: 'Restoration', exact: true }),
+  })
+  await restoration.locator('summary').click()
+  await expect(
+    restoration.locator('.mechanic-item').filter({ hasText: 'Packaged evidence' }),
+  ).toHaveAttribute('data-progress-state', 'done')
 })
 
 test('open accordions remain usable in high contrast and on mobile', async ({
