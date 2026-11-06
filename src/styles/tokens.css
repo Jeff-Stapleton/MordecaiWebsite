@@ -41,6 +41,11 @@
   --tt-rarity-purple: #c69bff;
   --tt-rarity-red: #ff8a8a;
   --tt-rarity-gold: var(--tt-good);
+  --tt-status-done: #4ccb6e;
+  --tt-status-todo: #6bb8ff;
+  --tt-status-partial: #ffc23d;
+  --tt-status-unknown: #8a9490;
+  --tt-status-broken: #ff5a3c;
   --tt-feat-common: #dce3dd;
   --tt-feat-rare: #45d6be;
   --tt-feat-legendary: #ff7ada;
@@ -137,6 +142,11 @@
   --tt-rarity-blue: #9ccfff;
   --tt-rarity-purple: #dcbeff;
   --tt-rarity-red: #ffb0b0;
+  --tt-status-done: #7cffaa;
+  --tt-status-todo: #9ccfff;
+  --tt-status-partial: #ffd45c;
+  --tt-status-unknown: #b8bfbc;
+  --tt-status-broken: #ff8a70;
   --tt-feat-common: #ffffff;
   --tt-feat-rare: #66ffe6;
   --tt-feat-legendary: #ff9ae6;

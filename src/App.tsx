@@ -8,13 +8,89 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom'
-import { progressStatusReviewedOn } from './data/systemProgress'
+import {
+  progressStatusReviewedOn,
+  type DetailedFeatureStage,
+  type MechanicSupport,
+  type ProgressVisualState,
+} from './data/systemProgress'
 import { systemBySlug, systems } from './data/systems'
 
 type Theme = 'diorama' | 'high-contrast'
 
 function systemPath(slug: string) {
   return `/${slug}`
+}
+
+const detailedStatus: Record<
+  DetailedFeatureStage,
+  {
+    label: string
+    shortLabel: string
+    mark: string
+    visualState: ProgressVisualState
+  }
+> = {
+  playtest: {
+    label: 'Done—verified in playtest',
+    shortLabel: 'Done',
+    mark: '✓',
+    visualState: 'done',
+  },
+  implemented: {
+    label: 'Partially implemented—not playtest verified',
+    shortLabel: 'Partial',
+    mark: '◆',
+    visualState: 'partial',
+  },
+  recovery: {
+    label: 'Known broken—recovery needed',
+    shortLabel: 'Broken',
+    mark: '!',
+    visualState: 'broken',
+  },
+  planned: {
+    label: 'Todo / planned',
+    shortLabel: 'Todo',
+    mark: '○',
+    visualState: 'todo',
+  },
+  uncertain: {
+    label: 'Unknown / source uncertain',
+    shortLabel: 'Unknown',
+    mark: '?',
+    visualState: 'unknown',
+  },
+}
+
+const mechanicSupport: Record<
+  MechanicSupport,
+  { label: string; visualState: ProgressVisualState }
+> = {
+  playtest: {
+    label: 'Done · playtest evidence',
+    visualState: 'done',
+  },
+  implemented: {
+    label: 'Partial · implemented profile',
+    visualState: 'partial',
+  },
+  designed: {
+    label: 'Todo · designed mechanic',
+    visualState: 'todo',
+  },
+  example: {
+    label: 'Todo · design example',
+    visualState: 'todo',
+  },
+  unspecified: {
+    label: 'Unknown · not specified',
+    visualState: 'unknown',
+  },
+  broken: {
+    label: 'Broken · known issue',
+    visualState: 'broken',
+  },
 }
 
 function TallyMark({ decorative = false }: { decorative?: boolean }) {
@@ -287,13 +363,12 @@ function SystemPage() {
     return <NotFoundPage />
   }
 
-  const features = system.progress.categories.flatMap(
-    (category) => category.features,
+  const detailedFeatures = system.progress.categories.flatMap(
+    (category) => category.details ?? [],
   )
-  const shippedCount = features.filter(
-    (feature) => feature.stage === 'shipped',
+  const playtestCount = detailedFeatures.filter(
+    (feature) => feature.stage === 'playtest',
   ).length
-  const plannedCount = features.length - shippedCount
 
   return (
     <article
@@ -330,14 +405,14 @@ function SystemPage() {
               <h2 id="progress-title">What is playable—and what comes next</h2>
               <p>{system.progress.intro}</p>
             </div>
-            <dl className="progress-totals" aria-label="Feature totals">
+            <dl className="progress-totals" aria-label="Named feature totals">
               <div>
-                <dt>Shipped / in playtest</dt>
-                <dd>{shippedCount}</dd>
+                <dt>Named features tracked</dt>
+                <dd>{detailedFeatures.length}</dd>
               </div>
               <div>
-                <dt>Designed / planned</dt>
-                <dd>{plannedCount}</dd>
+                <dt>Verified in playtest</dt>
+                <dd>{playtestCount}</dd>
               </div>
             </dl>
           </header>
@@ -345,84 +420,234 @@ function SystemPage() {
           <div className="progress-key">
             <p>
               <strong>Status reviewed {progressStatusReviewedOn}.</strong>{' '}
-              Shipped items are implemented in the current build; descriptions
-              call out known limits. Planned items remain visible so progress is
-              easy to follow.
+              Counts use the named entries inside each section—not the broad
+              overview—so totals are not doubled. Expand a section for its
+              evidence-backed inventory and known limits.
             </p>
             <ul aria-label="Feature status key">
-              <li>
-                <span
-                  className="feature-status feature-status--shipped"
-                  aria-hidden="true"
-                >
-                  ✓
-                </span>
-                Shipped / in playtest
-              </li>
-              <li>
-                <span
-                  className="feature-status feature-status--planned"
-                  aria-hidden="true"
-                >
-                  ○
-                </span>
-                Designed / planned
-              </li>
+              {(
+                Object.entries(detailedStatus) as [
+                  DetailedFeatureStage,
+                  (typeof detailedStatus)[DetailedFeatureStage],
+                ][]
+              ).map(([stage, status]) => (
+                <li key={stage}>
+                  <span
+                    className="feature-status"
+                    data-progress-state={status.visualState}
+                    aria-hidden="true"
+                  >
+                    {status.mark}
+                  </span>
+                  {status.shortLabel}
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="progress-category-list">
             {system.progress.categories.map((category, categoryIndex) => {
-              const categoryShipped = category.features.filter(
-                (feature) => feature.stage === 'shipped',
-              ).length
+              const details = category.details ?? []
+              const statusCounts = details.reduce<
+                Partial<Record<DetailedFeatureStage, number>>
+              >((counts, feature) => {
+                counts[feature.stage] = (counts[feature.stage] ?? 0) + 1
+                return counts
+              }, {})
 
               return (
-                <section className="progress-category" key={category.title}>
-                  <header className="progress-category__header">
+                <details className="progress-category" key={category.title}>
+                  <summary className="progress-category__summary">
                     <span className="progress-category__index">
                       {String(categoryIndex + 1).padStart(2, '0')}
                     </span>
-                    <div>
-                      <h3>{category.title}</h3>
-                      <p>{category.summary}</p>
-                    </div>
-                    <span className="progress-category__count">
-                      {categoryShipped}/{category.features.length} shipped
-                    </span>
-                  </header>
-                  <ul className="feature-list">
-                    {category.features.map((feature) => {
-                      const isShipped = feature.stage === 'shipped'
-                      const statusLabel = isShipped
-                        ? 'Shipped / in playtest'
-                        : 'Designed / planned'
-
-                      return (
-                        <li
-                          className={`feature-item feature-item--${feature.stage}`}
-                          key={feature.title}
-                        >
+                    <span className="progress-category__overview">
+                      <span className="progress-category__title-row">
+                        <h3>{category.title}</h3>
+                        <span className="progress-category__count">
+                          {details.length} named features
+                        </span>
+                      </span>
+                      <span className="progress-category__description">
+                        {category.summary}
+                      </span>
+                      <span
+                        className="overview-feature-list"
+                        aria-label="Section overview"
+                      >
+                        {category.features.map((feature) => (
                           <span
-                            className={`feature-status feature-status--${feature.stage}`}
-                            aria-hidden="true"
+                            className={`overview-feature overview-feature--${feature.stage}`}
+                            data-progress-state={
+                              feature.stage === 'shipped' ? 'done' : 'todo'
+                            }
+                            key={feature.title}
                           >
-                            {isShipped ? '✓' : '○'}
+                            <span aria-hidden="true">
+                              {feature.stage === 'shipped' ? '✓' : '○'}
+                            </span>
+                            {feature.title}
                           </span>
-                          <div>
+                        ))}
+                      </span>
+                      <span
+                        className="progress-category__status-counts"
+                        aria-label="Named feature status summary"
+                      >
+                        {(
+                          Object.entries(detailedStatus) as [
+                            DetailedFeatureStage,
+                            (typeof detailedStatus)[DetailedFeatureStage],
+                          ][]
+                        ).map(([stage, status]) =>
+                          statusCounts[stage] ? (
+                            <span
+                              className="status-count"
+                              data-progress-state={status.visualState}
+                              key={stage}
+                            >
+                              {statusCounts[stage]} {status.shortLabel}
+                            </span>
+                          ) : null,
+                        )}
+                      </span>
+                    </span>
+                    <span className="progress-category__toggle">
+                      <span className="progress-category__toggle-label">
+                        <span className="when-closed">Expand details</span>
+                        <span className="when-open">Collapse details</span>
+                      </span>
+                      <span className="progress-category__chevron" aria-hidden="true">
+                        ↓
+                      </span>
+                    </span>
+                  </summary>
+                  <div className="progress-category__details">
+                    <div className="progress-category__details-heading">
+                      <span className="section-label">Named feature inventory</span>
+                      <p>
+                        Each status belongs to this specific feature. It does not
+                        inherit the status of its parent system.
+                      </p>
+                    </div>
+                    <ul className="feature-list">
+                      {details.map((feature) => {
+                        const status = detailedStatus[feature.stage]
+                        const featureSummary = (
+                          <>
                             <div className="feature-item__heading">
-                              <h4>{feature.title}</h4>
+                              <div>
+                                {feature.group && (
+                                  <span className="feature-item__group">
+                                    {feature.group}
+                                  </span>
+                                )}
+                                <h4>{feature.title}</h4>
+                              </div>
                               <span className="feature-item__label">
-                                {statusLabel}
+                                {status.label}
                               </span>
                             </div>
                             <p>{feature.description}</p>
-                          </div>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </section>
+                            <p className="feature-item__evidence">
+                              <strong>Why this status:</strong>{' '}
+                              {feature.evidence}
+                            </p>
+                          </>
+                        )
+
+                        return (
+                          <li
+                            className={`feature-item feature-item--${feature.stage}`}
+                            data-progress-state={status.visualState}
+                            key={feature.id}
+                          >
+                            <span
+                              className="feature-status"
+                              data-progress-state={status.visualState}
+                              aria-hidden="true"
+                            >
+                              {status.mark}
+                            </span>
+                            {feature.mechanics ? (
+                              <details className="feature-mechanics">
+                                <summary className="feature-mechanics__summary">
+                                  <span className="feature-mechanics__overview">
+                                    {featureSummary}
+                                  </span>
+                                  <span className="feature-mechanics__toggle">
+                                    <span className="feature-mechanics__closed">
+                                      Explore mechanics
+                                    </span>
+                                    <span className="feature-mechanics__open">
+                                      Hide mechanics
+                                    </span>
+                                    <span
+                                      className="feature-mechanics__chevron"
+                                      aria-hidden="true"
+                                    >
+                                      ↓
+                                    </span>
+                                  </span>
+                                </summary>
+                                <div className="feature-mechanics__panel">
+                                  <p className="feature-mechanics__intro">
+                                    {feature.mechanics.summary}
+                                  </p>
+                                  <div className="mechanic-groups">
+                                    {feature.mechanics.groups.map((group) => (
+                                      <section
+                                        className="mechanic-group"
+                                        key={group.title}
+                                      >
+                                        <header>
+                                          <h5>{group.title}</h5>
+                                          {group.summary && <p>{group.summary}</p>}
+                                        </header>
+                                        <ol className="mechanic-list">
+                                          {group.items.map((mechanic, index) => {
+                                            const support =
+                                              mechanicSupport[mechanic.support]
+
+                                            return (
+                                              <li
+                                                className={`mechanic-item${
+                                                  mechanic.milestone
+                                                    ? ' mechanic-item--milestone'
+                                                    : ''
+                                                }`}
+                                                data-progress-state={
+                                                  support.visualState
+                                                }
+                                                key={`${mechanic.label}-${index}`}
+                                              >
+                                                <div>
+                                                  <strong>{mechanic.label}</strong>
+                                                  <span>{support.label}</span>
+                                                </div>
+                                                <p>{mechanic.description}</p>
+                                              </li>
+                                            )
+                                          })}
+                                        </ol>
+                                      </section>
+                                    ))}
+                                  </div>
+                                  <p className="feature-mechanics__sources">
+                                    <strong>Maintainer sources:</strong>{' '}
+                                    {feature.mechanics.sources.join(' · ')}
+                                  </p>
+                                </div>
+                              </details>
+                            ) : (
+                              <div>{featureSummary}</div>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                </details>
               )
             })}
           </div>
