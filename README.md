@@ -48,26 +48,44 @@ The repository includes a multi-stage `Dockerfile`, an nginx configuration, and
 `fly.toml`. The build stage compiles the Vite app; the runtime stage serves the
 static output on port 8080.
 
-No deployment is performed by this scaffold. To deploy from a workstation with
-Fly.io credentials:
+Production is available at
+[https://mordecai-website.fly.dev/](https://mordecai-website.fly.dev/).
+
+### Automatic deployment
+
+The `Deploy to Fly.io` GitHub Actions workflow deploys every push to `main` and
+can also be started manually with `workflow_dispatch`.
+
+Create an app-scoped deploy token:
+
+```bash
+fly tokens create deploy -a mordecai-website
+```
+
+Store its value as the repository Actions secret `FLY_API_TOKEN`. Never commit
+the token. The workflow deploys with the legacy remote builder because Depot
+timed out for this app:
+
+```bash
+flyctl deploy --remote-only --depot=false -a mordecai-website
+```
+
+The `--depot=false` flag is required for both automated and manual deployments.
+
+### Manual deployment
+
+To deploy from a workstation with Fly.io credentials:
 
 1. [Install `flyctl`](https://fly.io/docs/flyctl/install/).
 2. Authenticate with `fly auth login`.
-3. Choose a globally unique app name and create it:
+3. Run:
 
    ```bash
-   fly apps create <unique-app-name>
+   flyctl deploy --remote-only --depot=false -a mordecai-website
    ```
 
-4. Replace the `app` value in `fly.toml` with that name. Adjust
-   `primary_region` if `ord` is not the intended region.
-5. Build and deploy:
-
-   ```bash
-   fly deploy
-   ```
-
-6. Check the static service with `fly status` and `fly open`.
+4. Check the static service with `fly status -a mordecai-website` or open the
+   [live site](https://mordecai-website.fly.dev/).
 
 To test the production image without Fly:
 
