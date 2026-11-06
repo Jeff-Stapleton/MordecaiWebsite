@@ -7,9 +7,31 @@ The public system pages use two deliberately separate layers:
 - `src/data/systemFeatureInventory.ts` contains individually named features,
   plain-language descriptions, status evidence, and maintainer source
   references. Page totals count only these entries.
+- `src/data/systemFeatureMechanics.ts` contains optional nested attack
+  profiles, spell behavior and ranks, building/service detail, biome
+  progression, and boss mechanics. These explain an existing feature and are
+  never counted as additional features.
 
 This prevents a broad item such as “Fourteen Rank 1 spells” and its fourteen
 named spells from being counted twice.
+
+## Nested mechanics rules
+
+- Nested mechanics describe an existing feature; they do not change its
+  progress status or any page total.
+- `Implemented profile`, `Playtest evidence`, `Designed mechanic`, `Design
+  example`, and `Not yet specified` describe the nested fact—not the parent.
+- Weapon profile numbers are shown only where implementation stories provide
+  them, and are labeled as initial tuning placeholders.
+- Skill ranks always render ranks 1–20 when a rank source exists. Ranks 5, 10,
+  15, and 20 are labeled milestones. Ordinary implemented-spell ranks show the
+  shared framework’s +5% power step while stating that no distinct technique is
+  authored. Design-only spells and weapon ranks explicitly say when no bonus is
+  specified.
+- A source conflict is displayed rather than silently choosing the more
+  flattering version.
+- Features without useful supported depth do not receive an empty nested
+  accordion.
 
 ## Status rules
 
@@ -31,9 +53,11 @@ individual entry and its evidence only after checking that feature.
 2. Update the feature entry's `stage`, `evidence`, and `sources`.
 3. Add newly supported named entries to the appropriate source-backed group.
    Do not fill gaps by inference.
-4. Update the broad category overview only when its public summary has changed.
-5. Advance `progressStatusReviewedOn`.
-6. Run `npm test`, `npm run lint`, and `npm run build`.
+4. Update `systemFeatureMechanics.ts` only when a source supports genuinely
+   useful depth. Keep implementation facts separate from future rank design.
+5. Update the broad category overview only when its public summary has changed.
+6. Advance `progressStatusReviewedOn`.
+7. Run `npm test`, `npm run lint`, and `npm run build`.
 
 ## Inventory coverage
 
@@ -56,14 +80,49 @@ The inventory explicitly names:
 - all six biomes, named traversal tools, world-structure concepts, and endings;
 - enemy roles and tiers, eleven named biome enemies, and six named bosses.
 
+Nested coverage adds:
+
+- attack profiles and rank tracks for all nine implemented melee families;
+- design profiles and rank tracks for Longbow, Shortbow, Crossbow, and
+  Two-Weapon Fighting, plus explicit profile gaps for Throwables and Wands;
+- current behavior and rank coverage for all fourteen launch spells, including
+  the exact arena profiles documented for Fireball, Blink, Stone Skin, and
+  Restoration;
+- milestone rank coverage for the three additional skill-sheet-only spells:
+  Frost Ward, Float, and Counter Spell, each clearly labeled design-only;
+- services, tier limits, and requirements gaps for Alchemist, Mage Tower,
+  Blacksmith, Clinic, and Keep/Walls/Defenses;
+- environment, enemies, boss mechanics, and traversal unlocks for all six
+  biomes, plus the five assigned tools and uncertain Shock Device;
+- nested mechanics for all six named bosses on the Enemies page.
+
 ## Honest gaps and exclusions
 
 - `US-023` is filed under `stories/done`, but Snare, Enfeeble, and Enchant
   Weapon have unchecked acceptance criteria and tests. They remain uncertain.
+- Fireball’s skill-sheet Rank 1 text describes channeled force projectiles,
+  while the implementation story defines one fire projectile. Both are shown.
+- Cone of Cold’s skill-sheet Rank 1 cell duplicates Stone Skin’s armor text.
+  It is flagged as corrupt rather than presented as a cold-spell mechanic.
+- Fire Ward’s proposal says “magic damage,” while its skill sheet and
+  implementation use fire-only absorption. The conflict remains visible.
+- Stone Skin’s implementation story treats its power as flat damage reduction,
+  while the playable-arena story labels the arena value as shield HP. Both
+  interpretations are surfaced.
+- Bless has implemented behavior but no authored skill entry or rank table.
+- The full-rank spell proposal covers eight spells. Fireball, Cone of Cold,
+  Magic Missile, Stone Skin, and Sleep have milestone-only sheets; their
+  ordinary ranks are explicitly unspecified.
+- All authored weapon/spell values containing placeholders remain described as
+  placeholders. No `{x} × rank` values are turned into invented numbers.
 - The status framework exists, but each launch status lacks current packaged
   verification. They are not labeled as playtest-verified.
 - The skill sheet still contains value placeholders. Its named entries are
   design coverage, not proof of playable techniques.
+- `Specs/skill_sheet_v1.1.md` is treated as the current skill source.
+  `Specs/skill_sheet_v1.md` contains older or alternate milestone names; those
+  rows are excluded as version drift rather than merged into a fictitious
+  combined progression.
 - Pyromaniac is the only named feat and is explicitly a pipeline test sample.
   No production feat roster has been authored.
 - Current inventory pickups are test fixtures, not a promised launch-loot
@@ -73,6 +132,8 @@ The inventory explicitly names:
   Healing Light does not replace the canonical Cone of Cold and Restoration.
 - Shock Device is named in world history but has no assigned biome unlock, so
   its state is uncertain.
+- Village buildings share four tier names, but the design provides no
+  building-specific costs, prerequisites, or tier-by-tier unlock table.
 - Verdant Wilds has a named boss but no named standard-enemy family. No roster
   is invented. Goblin Skirmisher, Skeletal Archer, and Corrupted Knight are
   schema examples and are excluded.

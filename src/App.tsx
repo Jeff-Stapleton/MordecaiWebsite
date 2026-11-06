@@ -11,6 +11,7 @@ import {
 import {
   progressStatusReviewedOn,
   type DetailedFeatureStage,
+  type MechanicSupport,
 } from './data/systemProgress'
 import { systemBySlug, systems } from './data/systems'
 
@@ -49,6 +50,14 @@ const detailedStatus: Record<
     shortLabel: 'Uncertain',
     mark: '?',
   },
+}
+
+const mechanicSupportLabel: Record<MechanicSupport, string> = {
+  playtest: 'Playtest evidence',
+  implemented: 'Implemented profile',
+  designed: 'Designed mechanic',
+  example: 'Design example',
+  unspecified: 'Not yet specified',
 }
 
 function TallyMark({ decorative = false }: { decorative?: boolean }) {
@@ -486,6 +495,28 @@ function SystemPage() {
                     <ul className="feature-list">
                       {details.map((feature) => {
                         const status = detailedStatus[feature.stage]
+                        const featureSummary = (
+                          <>
+                            <div className="feature-item__heading">
+                              <div>
+                                {feature.group && (
+                                  <span className="feature-item__group">
+                                    {feature.group}
+                                  </span>
+                                )}
+                                <h4>{feature.title}</h4>
+                              </div>
+                              <span className="feature-item__label">
+                                {status.label}
+                              </span>
+                            </div>
+                            <p>{feature.description}</p>
+                            <p className="feature-item__evidence">
+                              <strong>Why this status:</strong>{' '}
+                              {feature.evidence}
+                            </p>
+                          </>
+                        )
 
                         return (
                           <li
@@ -498,26 +529,77 @@ function SystemPage() {
                             >
                               {status.mark}
                             </span>
-                            <div>
-                              <div className="feature-item__heading">
-                                <div>
-                                  {feature.group && (
-                                    <span className="feature-item__group">
-                                      {feature.group}
+                            {feature.mechanics ? (
+                              <details className="feature-mechanics">
+                                <summary className="feature-mechanics__summary">
+                                  <span className="feature-mechanics__overview">
+                                    {featureSummary}
+                                  </span>
+                                  <span className="feature-mechanics__toggle">
+                                    <span className="feature-mechanics__closed">
+                                      Explore mechanics
                                     </span>
-                                  )}
-                                  <h4>{feature.title}</h4>
+                                    <span className="feature-mechanics__open">
+                                      Hide mechanics
+                                    </span>
+                                    <span
+                                      className="feature-mechanics__chevron"
+                                      aria-hidden="true"
+                                    >
+                                      ↓
+                                    </span>
+                                  </span>
+                                </summary>
+                                <div className="feature-mechanics__panel">
+                                  <p className="feature-mechanics__intro">
+                                    {feature.mechanics.summary}
+                                  </p>
+                                  <div className="mechanic-groups">
+                                    {feature.mechanics.groups.map((group) => (
+                                      <section
+                                        className="mechanic-group"
+                                        key={group.title}
+                                      >
+                                        <header>
+                                          <h5>{group.title}</h5>
+                                          {group.summary && <p>{group.summary}</p>}
+                                        </header>
+                                        <ol className="mechanic-list">
+                                          {group.items.map((mechanic, index) => (
+                                            <li
+                                              className={`mechanic-item mechanic-item--${mechanic.support}${
+                                                mechanic.milestone
+                                                  ? ' mechanic-item--milestone'
+                                                  : ''
+                                              }`}
+                                              key={`${mechanic.label}-${index}`}
+                                            >
+                                              <div>
+                                                <strong>{mechanic.label}</strong>
+                                                <span>
+                                                  {
+                                                    mechanicSupportLabel[
+                                                      mechanic.support
+                                                    ]
+                                                  }
+                                                </span>
+                                              </div>
+                                              <p>{mechanic.description}</p>
+                                            </li>
+                                          ))}
+                                        </ol>
+                                      </section>
+                                    ))}
+                                  </div>
+                                  <p className="feature-mechanics__sources">
+                                    <strong>Maintainer sources:</strong>{' '}
+                                    {feature.mechanics.sources.join(' · ')}
+                                  </p>
                                 </div>
-                                <span className="feature-item__label">
-                                  {status.label}
-                                </span>
-                              </div>
-                              <p>{feature.description}</p>
-                              <p className="feature-item__evidence">
-                                <strong>Why this status:</strong>{' '}
-                                {feature.evidence}
-                              </p>
-                            </div>
+                              </details>
+                            ) : (
+                              <div>{featureSummary}</div>
+                            )}
                           </li>
                         )
                       })}

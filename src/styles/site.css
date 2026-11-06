@@ -1424,6 +1424,189 @@ p {
   font-size: 14px;
 }
 
+.feature-mechanics {
+  min-width: 0;
+}
+
+.feature-mechanics__summary {
+  display: grid;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.feature-mechanics__summary::-webkit-details-marker {
+  display: none;
+}
+
+.feature-mechanics__summary:focus-visible {
+  border-radius: var(--tt-radius-key);
+}
+
+.feature-mechanics__toggle {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 10px;
+  border: 2px solid var(--tt-ink-muted);
+  border-radius: var(--tt-radius-pill);
+  color: var(--tt-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.feature-mechanics__chevron {
+  transition: transform 160ms ease;
+}
+
+.feature-mechanics__open {
+  display: none;
+}
+
+.feature-mechanics[open] .feature-mechanics__closed {
+  display: none;
+}
+
+.feature-mechanics[open] .feature-mechanics__open {
+  display: inline;
+}
+
+.feature-mechanics[open] .feature-mechanics__chevron {
+  transform: rotate(180deg);
+}
+
+.feature-mechanics__panel {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 2px solid var(--tt-ink);
+  border-radius: var(--tt-radius-key);
+  background: var(--tt-enamel);
+  color: var(--tt-ink);
+}
+
+.feature-item .feature-mechanics__intro {
+  max-width: none;
+  margin: 0;
+  padding: 18px 20px;
+  border-bottom: 2px solid var(--tt-ink);
+  background: var(--tt-plate);
+  color: var(--tt-text);
+  font-size: 16px;
+}
+
+.mechanic-groups {
+  display: grid;
+}
+
+.mechanic-group + .mechanic-group {
+  border-top: 2px solid var(--tt-ink);
+}
+
+.mechanic-group > header {
+  padding: 16px 20px;
+  border-bottom: 2px solid var(--tt-enamel-shade);
+  background: color-mix(in srgb, var(--page-accent) 12%, var(--tt-enamel));
+}
+
+.mechanic-group h5 {
+  margin: 0;
+  color: var(--tt-ink);
+  font-family: var(--tt-font-display);
+  font-size: 19px;
+  line-height: 1.2;
+}
+
+.mechanic-group > header p {
+  max-width: 820px;
+  margin: 5px 0 0;
+  font-size: 13px;
+}
+
+.mechanic-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mechanic-item {
+  min-width: 0;
+  padding: 14px 18px;
+  border-left: 5px solid var(--tt-enamel-shade);
+}
+
+.mechanic-item:nth-child(even) {
+  border-left-width: 7px;
+}
+
+.mechanic-item:nth-child(n + 3) {
+  border-top: 2px solid var(--tt-enamel-shade);
+}
+
+.mechanic-item--playtest {
+  border-left-color: var(--tt-heal);
+}
+
+.mechanic-item--implemented {
+  border-left-color: var(--tt-rarity-blue);
+}
+
+.mechanic-item--designed {
+  border-left-color: var(--tt-good);
+}
+
+.mechanic-item--example {
+  border-left-color: var(--tt-rarity-purple);
+}
+
+.mechanic-item--unspecified {
+  border-left-color: var(--tt-ink-muted);
+}
+
+.mechanic-item--milestone {
+  background: color-mix(in srgb, var(--tt-good) 10%, var(--tt-enamel));
+}
+
+.mechanic-item > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mechanic-item > div > strong {
+  color: var(--tt-ink);
+  font-family: var(--tt-font-display);
+  font-size: 16px;
+}
+
+.mechanic-item > div > span {
+  color: var(--tt-ink-muted);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.mechanic-item p {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.feature-mechanics__sources {
+  max-width: none;
+  margin: 0;
+  padding: 14px 20px;
+  border-top: 2px solid var(--tt-ink);
+  background: var(--tt-enamel-shade);
+  font-family: var(--tt-font-mono);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
 .system-brief {
   margin-top: 88px;
   padding-top: 64px;
@@ -1927,6 +2110,24 @@ p {
     align-items: flex-start;
     flex-direction: column;
     gap: 5px;
+  }
+
+  .mechanic-list {
+    grid-template-columns: 1fr;
+  }
+
+  .mechanic-item:nth-child(n + 2) {
+    border-top: 2px solid var(--tt-enamel-shade);
+  }
+
+  .mechanic-item > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mechanic-item > div > span {
+    text-align: left;
   }
 
   .system-brief {

@@ -3,6 +3,7 @@ import type {
   DetailedFeatureStage,
   SystemSlug,
 } from './systemProgress'
+import { featureMechanicsById } from './systemFeatureMechanics'
 
 type NamedFeature = readonly [id: string, title: string, description: string]
 
@@ -33,6 +34,7 @@ function entries(
     evidence,
     sources: Array.isArray(sources) ? sources : [sources],
     group,
+    mechanics: featureMechanicsById[id],
   }))
 }
 

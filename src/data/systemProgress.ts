@@ -17,6 +17,32 @@ export type DetailedFeatureStage =
   | 'planned'
   | 'uncertain'
 
+export type MechanicSupport =
+  | 'playtest'
+  | 'implemented'
+  | 'designed'
+  | 'example'
+  | 'unspecified'
+
+export type MechanicItem = {
+  label: string
+  description: string
+  support: MechanicSupport
+  milestone?: boolean
+}
+
+export type MechanicGroup = {
+  title: string
+  summary?: string
+  items: MechanicItem[]
+}
+
+export type FeatureMechanics = {
+  summary: string
+  groups: MechanicGroup[]
+  sources: string[]
+}
+
 export type ProgressFeature = {
   title: string
   description: string
@@ -31,6 +57,7 @@ export type DetailedFeature = {
   evidence: string
   sources: string[]
   group?: string
+  mechanics?: FeatureMechanics
 }
 
 export type ProgressCategory = {
