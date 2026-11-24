@@ -85,21 +85,23 @@ export type SystemProgress = {
   categories: ProgressCategory[]
 }
 
-export const progressStatusReviewedOn = '6 November 2026'
+export const progressStatusReviewedOn = '24 November 2026'
 
 const progressOverviewBySystem = {
   combat: {
     intro:
-      'The current playtest proves the close-range fight, defensive inputs, HUD, and death loop. Magic, aiming, and deeper combat tuning are still being connected.',
+      'The current playtest now proves aim-driven melee and spells, directional defense, authoritative stamina, posture openings for enemies and players, and a regenerating Spell Point loop.',
     categories: [
       {
         title: 'Attacks & weapons',
         summary:
-          'The arena has a working melee foundation, with the full ranged and aiming promise still ahead.',
+          'The arena has a working aim-driven melee foundation, with ranged weapon families still ahead.',
         sources: [
           'stories/done/US-083-recovery-combat-abilities-and-input.md',
           'stories/done/US-078-playable-weapon-arena.md',
-          'ProjectMordecai issues #34 and #36',
+          'stories/done/US-098-recovery-facing-and-aim.md',
+          'stories/done/US-125-attack-cancel-and-dodge-fixes.md',
+          'ProjectMordecai PRs #96 and #139',
         ],
         features: [
           {
@@ -117,17 +119,21 @@ const progressOverviewBySystem = {
           {
             title: 'Independent movement and aim',
             description:
-              'Twin-stick facing and mouse aim are designed, but the current playtest still pins facing in one direction.',
-            stage: 'planned',
+              'Mouse and right-stick aim drive facing while movement remains camera-relative and the diorama camera stays fixed.',
+            stage: 'shipped',
           },
         ],
       },
       {
         title: 'Defense & pressure',
         summary:
-          'Defense is playable today; resource feel and advanced openings still need iteration.',
+          'Directional defense, stamina pressure, dodge timing, and posture openings are playable in current packaged evidence.',
         sources: [
           'stories/done/US-101-recovery-defenses-against-enemy-melee.md',
+          'stories/done/US-121-recovery-directional-block-and-parry.md',
+          'stories/done/US-122-stamina-runtime.md',
+          'stories/done/US-124-player-posture-break-and-vulnerability.md',
+          'stories/done/US-125-attack-cancel-and-dodge-fixes.md',
           'stories/done/US-005-dodge-system.md',
           'stories/done/US-006-block-parry-system.md',
           'stories/done/US-007-posture-stagger-system.md',
@@ -137,37 +143,47 @@ const progressOverviewBySystem = {
           {
             title: 'Dodge, block, and parry',
             description:
-              'Gamepad defense and keyboard dodge pass packaged input checks, including protection from enemy melee.',
+              'Dodge travels by stamina tier, perfect evasion rewards precise timing, and block/parry protect only their configured forward arc.',
             stage: 'shipped',
           },
           {
             title: 'Tiered stamina and combat resources',
             description:
-              'Health, stamina, posture, and Spell Points are on the HUD; stamina regeneration and tuning still need recovery.',
+              'Authoritative tier tags drive regeneration, sprint drain, damage, dodge distance, block stability, and the Tin Tally HUD.',
             stage: 'shipped',
           },
           {
             title: 'Posture breaks and critical openings',
             description:
-              'The posture and stagger framework exists, while the complete player-facing punish loop remains to be playtested.',
-            stage: 'planned',
+              'Enemy breaks create stagger, riposte, and knockdown windows; player breaks create vulnerability, control lock, and knockdown.',
+            stage: 'shipped',
           },
         ],
       },
       {
         title: 'Magic & status',
         summary:
-          'The spell and status frameworks are broad, but only a narrow slice is dependable in the current build.',
+          'Fireball, Blink, Restoration, cooldowns, status names, and the Spell Point recovery loop have packaged evidence; the wider launch set remains mixed.',
         sources: [
           'stories/PLAN.md — Epics 4, 5, and R',
           'stories/done/US-057-playable-magic-arena.md',
-          'ProjectMordecai issues #20, #21, #25, and #35',
+          'stories/done/US-087-recovery-fireball-and-blink.md',
+          'stories/done/US-088-recovery-spell-cooldowns-hud.md',
+          'stories/done/US-090-recovery-spell-point-budget.md',
+          'stories/done/US-106-tin-tally-status-feedback.md',
+          'ProjectMordecai PRs #87, #91, #97, and #138',
         ],
         features: [
           {
-            title: 'Restoration and Spell Point spending',
+            title: 'Fireball, Blink, and Restoration',
             description:
-              'Restoration heals and spends SP during the packaged combat path.',
+              'The three core spell paths visibly deliver damage, movement, and healing while spending SP and starting their cooldowns.',
+            stage: 'shipped',
+          },
+          {
+            title: 'Spell Point regeneration and respawn refill',
+            description:
+              'SP regenerates at 0.25 per second times its multiplier, pauses while Dead or Silenced, halves while Cursed, and refills on respawn.',
             stage: 'shipped',
           },
           {
@@ -187,11 +203,13 @@ const progressOverviewBySystem = {
       {
         title: 'Fight loop & feedback',
         summary:
-          'A small test encounter now carries the player all the way through victory, death, and another attempt.',
+          'A small test encounter carries the player through readable Tin Tally combat, victory, death, and another attempt.',
         sources: [
           'stories/done/US-086-recovery-death-screen-kill-counter.md',
           'stories/done/US-092-recovery-enemy-indicators.md',
-          'stories/in-progress/US-091-recovery-hud-readouts.md',
+          'stories/done/US-102-tin-tally-theme-runtime.md',
+          'stories/done/US-105-tin-tally-core-hud.md',
+          'stories/done/US-106-tin-tally-status-feedback.md',
         ],
         features: [
           {
@@ -203,7 +221,7 @@ const progressOverviewBySystem = {
           {
             title: 'Tin Tally combat HUD',
             description:
-              'Core bars, kill count, enemy indicators, and the equipped-weapon plate are functional in the current build.',
+              'Final-map gauges, four spell cooldown slots, named status chips, callouts, combo text, kill count, and weapon plate are functional.',
             stage: 'shipped',
           },
           {
@@ -218,7 +236,7 @@ const progressOverviewBySystem = {
   },
   progression: {
     intro:
-      'Attributes, skills, and feats have runtime foundations. The next meaningful milestone is letting players see and use those systems through the pause menu.',
+      'Attributes, the ordered skill catalog, and earned feats now have live pause-menu views; allocation, derived-stat detail, and authored feat content remain ahead.',
     categories: [
       {
         title: 'Character growth',
@@ -239,8 +257,8 @@ const progressOverviewBySystem = {
           {
             title: 'Readable character sheet',
             description:
-              'The nine-attribute widget is implemented, but the Character tab is blank in the packaged playtest.',
-            stage: 'planned',
+              'The packaged Character tab shows all nine attributes, effective modifiers, and live Health, Stamina, Spell Points, and Posture.',
+            stage: 'shipped',
           },
           {
             title: 'Level 1–60 progression loop',
@@ -276,8 +294,8 @@ const progressOverviewBySystem = {
           {
             title: 'Playable Skills tab',
             description:
-              'The display framework exists, but the current public build still shows “Coming Soon.”',
-            stage: 'planned',
+              'The packaged tab shows the ordered 42-skill catalog, rank rows, categories, and live Magic-category switching.',
+            stage: 'shipped',
           },
         ],
       },
@@ -307,8 +325,8 @@ const progressOverviewBySystem = {
           {
             title: 'Playable Feats tab',
             description:
-              'The display widget exists, but it is not connected in the packaged pause menu yet.',
-            stage: 'planned',
+              'The packaged tab is connected to the PlayerState feat component and shows the live unlocked-feat count.',
+            stage: 'shipped',
           },
         ],
       },
@@ -568,7 +586,7 @@ const progressOverviewBySystem = {
   },
   world: {
     intro:
-      'The current build is a set of blockout test maps under the fixed diorama camera. The authored-cell framework, six biomes, gates, and campaign world are still ahead.',
+      'The current build has blockout test maps plus a cooked 17-piece Verdant Wilds terrain kit under the fixed diorama camera. Production cells, gates, and the campaign world are still ahead.',
     categories: [
       {
         title: 'Exploration foundation',
@@ -577,7 +595,7 @@ const progressOverviewBySystem = {
         sources: [
           'stories/done/US-001-project-foundation.md',
           'stories/done/US-100-recovery-playtest-test-maps.md',
-          'ProjectMordecai issues #26, #33, and #34',
+          'ProjectMordecai issue #26',
         ],
         features: [
           {
@@ -593,9 +611,15 @@ const progressOverviewBySystem = {
             stage: 'shipped',
           },
           {
-            title: 'Full gamepad navigation and wall visibility',
+            title: 'Full keyboard and gamepad navigation',
             description:
-              'Stick key names, player facing, and near-wall cutaways still have open playtest work.',
+              'Valid left-stick, L3 sprint, Gamepad A jump, mouse aim, and right-stick facing paths pass packaged input checks.',
+            stage: 'shipped',
+          },
+          {
+            title: 'Wall visibility near foreground geometry',
+            description:
+              'No cutaway or fade system currently keeps the player visible behind near walls.',
             stage: 'planned',
           },
         ],
@@ -634,16 +658,23 @@ const progressOverviewBySystem = {
       {
         title: 'Six-biome journey',
         summary:
-          'Each compact region carries a distinct mood, boss, and place in the theme of impermanence.',
+          'The first biome now has a validated terrain kit; complete production regions, encounters, and bosses remain ahead.',
         sources: [
           'Specs/world_design_v1.md',
           'Specs/game_design_v2.md §8',
+          'stories/done/US-120-verdant-wilds-v3-tile-import.md',
         ],
         features: [
           {
-            title: 'Verdant Wilds and Searing Expanse',
+            title: 'Verdant Wilds terrain tile kit',
             description:
-              'Denial and control shape the first two planned regions, their ruins, and their route tools.',
+              'Seventeen cooked terrain meshes, materials, ramps, cliffs, and pond banks pass a dedicated packaged traversal map.',
+            stage: 'shipped',
+          },
+          {
+            title: 'Production Verdant Wilds and Searing Expanse',
+            description:
+              'Denial and control shape the first two planned regions, but their production cells and encounters are not built.',
             stage: 'planned',
           },
           {
@@ -694,7 +725,7 @@ const progressOverviewBySystem = {
   },
   enemies: {
     intro:
-      'The current arena has one functional placeholder enemy family. Indicators, damage, death, and reset work; production roles, biome rosters, and bosses remain designed rather than playable.',
+      'The current arena has one functional placeholder enemy family with posture break, riposte, knockdown, indicators, damage, death, and reset. Production roles, biome rosters, and bosses remain designed.',
     categories: [
       {
         title: 'Current arena enemy',
@@ -704,6 +735,7 @@ const progressOverviewBySystem = {
           'stories/in-progress/US-085-recovery-frontliner-content.md',
           'stories/done/US-084-recovery-enemy-attack-path.md',
           'stories/done/US-092-recovery-enemy-indicators.md',
+          'ProjectMordecai PR #154 — US-123 (story file absent on a5af5576)',
         ],
         features: [
           {
@@ -722,6 +754,12 @@ const progressOverviewBySystem = {
             title: 'Always-on enemy health indicators',
             description:
               'Each living enemy has one readable red indicator that disappears on death and returns on reset.',
+            stage: 'shipped',
+          },
+          {
+            title: 'Posture break, riposte, and knockdown',
+            description:
+              'Enemy posture damage can interrupt attacks, open a critical riposte, escalate into knockdown, and recover.',
             stage: 'shipped',
           },
         ],

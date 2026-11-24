@@ -168,12 +168,15 @@ const combat = {
       ],
     ),
     entry(
-      'recovery',
+      'playtest',
       'Control foundation',
-      'ProjectMordecai issue #34',
+      [
+        'stories/done/US-098-recovery-facing-and-aim.md',
+        'ProjectMordecai PR #139',
+      ],
       'combat-independent-aim',
       'Independent movement and aim',
-      'The fixed-camera twin-stick goal is documented, but current facing and aim remain pinned.',
+      'Physical mouse and right-stick aim drive actor facing while movement remains camera-relative and the camera stays fixed.',
     ),
   ],
   'Defense & pressure': [
@@ -183,22 +186,24 @@ const combat = {
       [
         'stories/done/US-083-recovery-combat-abilities-and-input.md',
         'stories/done/US-101-recovery-defenses-against-enemy-melee.md',
+        'stories/done/US-121-recovery-directional-block-and-parry.md',
+        'stories/done/US-125-attack-cancel-and-dodge-fixes.md',
       ],
       [
         [
           'combat-dodge',
           'Dodge',
-          'Keyboard and gamepad dodge inputs work and protect against enemy melee.',
+          'Keyboard and gamepad dodge protect against enemy melee and travel a stamina-tier-scaled 500/400/300/200 cm.',
         ],
         [
           'combat-block',
           'Block',
-          'Gamepad block holds a guard and mitigates enemy melee in the packaged test.',
+          'A held guard mitigates hits inside its forward defensive arc; rear hits land unblocked.',
         ],
         [
           'combat-parry',
           'Parry',
-          'A timed gamepad trigger input drops the guard, parries, and returns to guard.',
+          'A timed trigger parries only inside the same directional arc as block and returns to guard.',
         ],
         [
           'combat-perfect-block',
@@ -226,42 +231,47 @@ const combat = {
       'Bindings exist, but the playtest bridge cannot yet hold the mouse button long enough to accept this path.',
     ),
     ...entries(
-      'implemented',
+      'playtest',
       'Openings and pressure',
       [
         'stories/done/US-005-dodge-system.md',
         'stories/done/US-007-posture-stagger-system.md',
+        'stories/done/US-125-attack-cancel-and-dodge-fixes.md',
+        'ProjectMordecai PR #154 — US-123',
       ],
       [
         [
           'combat-perfect-dodge',
           'Perfect Dodge',
-          'Timing-window and reward logic is implemented, without current packaged acceptance evidence.',
+          'A hit evaded in the first 150 ms grants one stamina refund, one perfect-action event, and success-only HUD feedback.',
         ],
         [
           'combat-posture-break',
-          'Posture Break',
-          'Heavy hits and perfect defense can build enemy posture toward a break in the implemented framework.',
+          'Enemy Posture Break',
+          'Melee, projectiles, parries, and perfect blocks can break enemy posture and interrupt an in-flight attack.',
         ],
         [
           'combat-stagger',
           'Stagger',
-          'The posture framework can interrupt an enemy when its posture breaks.',
+          'Enemy posture break creates a 1.5-second stagger and 1.5x vulnerability before posture recovers.',
         ],
         [
           'combat-riposte',
           'Riposte / critical window',
-          'A posture break can open a punish window in code; the full player-facing loop is not currently verified.',
+          'Parrying a broken enemy opens a one-second, single-consumption 1.5x critical riposte window.',
         ],
       ],
     ),
     entry(
-      'recovery',
+      'playtest',
       'Combat resources',
-      'stories/done/US-083-recovery-combat-abilities-and-input.md — N30',
+      [
+        'stories/done/US-122-stamina-runtime.md',
+        'ProjectMordecai PRs #144 and #147',
+      ],
       'combat-tiered-stamina',
       'Green, Yellow, Red, and Exhausted stamina',
-      'Tier logic and the HUD exist, but the current player stamina does not regenerate.',
+      'Authoritative tiers now drive regeneration, spend delay, sprint drain, melee damage, dodge travel, block stability, and HUD colour.',
     ),
     ...entries(
       'playtest',
@@ -273,32 +283,45 @@ const combat = {
           'Health',
           'The HUD updates as the player takes damage, heals, dies, and respawns.',
         ],
-        [
-          'combat-spell-points',
-          'Spell Points',
-          'The HUD displays SP and Restoration spends the resource in the packaged path.',
-        ],
       ],
     ),
     entry(
-      'implemented',
-      'Combat resources',
-      'stories/done/US-007-posture-stagger-system.md',
+      'playtest',
+      'Openings and pressure',
+      [
+        'stories/done/US-007-posture-stagger-system.md',
+        'stories/done/US-124-player-posture-break-and-vulnerability.md',
+        'ProjectMordecai PR #158',
+      ],
       'combat-stability',
-      'Player Stability',
-      'The resistance-to-stagger model exists in design and combat code, without a dedicated packaged readout.',
+      'Player posture break and knockdown',
+      'Enemy hits can overcome player stability, lock control, apply 1.5x vulnerability, escalate to a two-second 2x knockdown, and recover.',
+    ),
+    entry(
+      'playtest',
+      'Combat resources',
+      [
+        'stories/done/US-090-recovery-spell-point-budget.md',
+        'ProjectMordecai PR #165',
+      ],
+      'combat-spell-points',
+      'Spell Points, regeneration, and respawn refill',
+      'The HUD shows SP spending and 0.25-per-second multiplier-scaled recovery; regen pauses while Dead or Silenced, halves while Cursed, and refills to MaxSP on respawn.',
     ),
   ],
   'Magic & status': [
     ...entries(
-      'recovery',
+      'playtest',
       'Rank 1 launch spells',
-      ['ProjectMordecai issue #20', 'stories/backlog/US-087-recovery-fireball-and-blink.md'],
+      [
+        'stories/done/US-087-recovery-fireball-and-blink.md',
+        'ProjectMordecai PRs #87, #89, and #90',
+      ],
       [
         [
           'spell-fireball',
           'Fireball',
-          'Projectile code and spell content exist, but the current packaged cast spends SP without firing or dealing damage.',
+          'A visible configured projectile launches from the caster, passes non-damageable triggers, and damages the retained target.',
         ],
       ],
     ),
@@ -320,20 +343,26 @@ const combat = {
       ],
     ),
     entry(
-      'recovery',
+      'playtest',
       'Rank 1 launch spells',
-      'ProjectMordecai issue #21',
+      [
+        'stories/done/US-106-tin-tally-status-feedback.md',
+        'ProjectMordecai PRs #127 and #138',
+      ],
       'spell-stone-skin',
       'Stone Skin',
-      'The armor buff exists, but its player-facing status indicator currently reads only “Status.”',
+      'The armor buff casts in the packaged path and its Tin Tally status chip shows the distinct “Stone Skin” name and duration.',
     ),
     entry(
-      'recovery',
+      'playtest',
       'Rank 1 launch spells',
-      ['ProjectMordecai issue #25', 'stories/backlog/US-087-recovery-fireball-and-blink.md'],
+      [
+        'stories/done/US-087-recovery-fireball-and-blink.md',
+        'ProjectMordecai PR #91',
+      ],
       'spell-blink',
       'Blink',
-      'Teleport and i-frame code exist, but Blink can spend SP without moving when an enemy blocks the route.',
+      'Blink moves past pawns, clamps against world geometry, charges only after positive movement, and removes invulnerability on time.',
     ),
     ...entries(
       'implemented',
@@ -455,12 +484,15 @@ const combat = {
       ],
     ),
     entry(
-      'recovery',
-      'Feedback still being recovered',
-      'ProjectMordecai issue #79',
+      'playtest',
+      'Tin Tally combat feedback',
+      [
+        'stories/done/US-106-tin-tally-status-feedback.md',
+        'ProjectMordecai PRs #134 and #137',
+      ],
       'feedback-combo-counter',
       'Combo counter',
-      'The counter exists, but it can disappear after a HUD rebuild during an active combo.',
+      'The live counter reads “Hit N,” survives a HUD rebuild during an active combo, advances from real melee input, and hides when the window closes.',
     ),
     entry(
       'implemented',
@@ -471,30 +503,46 @@ const combat = {
       'Damage-type-colored world numbers are implemented without current packaged acceptance evidence.',
     ),
     ...entries(
-      'recovery',
-      'Feedback still being recovered',
-      ['ProjectMordecai issues #13, #21, and #35', 'stories/backlog/US-088-recovery-spell-cooldowns-hud.md'],
+      'playtest',
+      'Tin Tally combat feedback',
+      [
+        'stories/done/US-088-recovery-spell-cooldowns-hud.md',
+        'stories/done/US-106-tin-tally-status-feedback.md',
+        'ProjectMordecai PRs #97, #123, and #138',
+      ],
       [
         [
           'feedback-status-indicators',
           'Named status indicators',
-          'The HUD can show a status, but the current label can lose the specific status name.',
+          'Tin Tally chips show distinct player-facing names, glyph, duration or stacks, and polarity for concurrent statuses.',
         ],
         [
           'feedback-spell-cooldowns',
           'Four spell cooldown readouts',
-          'Only two widgets exist and spells currently have no working cooldown state.',
+          'Four labelled Q / E / R / 1 slots are bound to Fireball, Blink, Stone Skin, and Restoration GAS cooldowns.',
         ],
       ],
     ),
-    ...entries(
+    entry(
       'planned',
       'Presentation polish',
       'stories/PLAN.md — Epic 10 Phase 4',
+      'feedback-status-vfx',
+      'Status-effect VFX',
+      'Niagara and animation feedback for the launch statuses.',
+    ),
+    entry(
+      'playtest',
+      'Tin Tally combat feedback',
       [
-        ['feedback-status-vfx', 'Status-effect VFX', 'Niagara and animation feedback for the launch statuses.'],
-        ['feedback-hud-polish', 'Final combat-HUD polish', 'Final Tin Tally layout, motion, icons, and visual refinement.'],
+        'stories/done/US-102-tin-tally-theme-runtime.md',
+        'stories/done/US-103-tin-tally-foundation-assets.md',
+        'stories/done/US-105-tin-tally-core-hud.md',
+        'ProjectMordecai PRs #120, #121, and #125',
       ],
+      'feedback-hud-polish',
+      'Tin Tally HUD foundation and final map',
+      'Both themes, final gauges, spell slots, prompt, weapon plate, low-health frame, status chips, callouts, and combo layout have packaged evidence.',
     ),
   ],
 } satisfies Record<string, DetailedFeature[]>
@@ -526,12 +574,15 @@ const progression = {
       'Attribute growth uses four diminishing-return bands instead of raw modifiers.',
     ),
     entry(
-      'recovery',
+      'playtest',
       'Player-facing progression',
-      'ProjectMordecai issue #9',
+      [
+        'stories/done/US-093-recovery-pause-menu-tab-contents.md',
+        'ProjectMordecai PR #128',
+      ],
       'progression-character-sheet',
       'Character sheet',
-      'The nine-attribute widget exists, but the packaged Character tab is blank.',
+      'The packaged Character tab shows nine exact-case attributes, effective modifiers, and four live resource rows.',
     ),
     ...entries(
       'planned',
@@ -642,12 +693,15 @@ const progression = {
       'The milestone cadence is locked, but many sheet values remain placeholders and are not playable unlocks.',
     ),
     entry(
-      'recovery',
+      'playtest',
       'Player-facing progression',
-      'ProjectMordecai issue #10',
+      [
+        'stories/done/US-093-recovery-pause-menu-tab-contents.md',
+        'ProjectMordecai PR #128',
+      ],
       'skills-tab',
       'Skills tab',
-      'The display framework exists, but the packaged tab still shows “Coming Soon.”',
+      'The packaged tab shows the ordered 42-skill catalog, rank rows, categories, and a real Magic-category switch.',
     ),
   ],
   'Earned feats': [
@@ -684,12 +738,15 @@ const progression = {
       'The design calls this out as missing authoring, so no roster is inferred.',
     ),
     entry(
-      'recovery',
+      'playtest',
       'Player-facing progression',
-      'ProjectMordecai issue #10',
+      [
+        'stories/done/US-093-recovery-pause-menu-tab-contents.md',
+        'ProjectMordecai PR #128',
+      ],
       'feats-tab',
       'Feats tab',
-      'The display widget exists, but the packaged tab still shows “Coming Soon.”',
+      'The packaged tab is connected to the PlayerState feat component and displays the unlocked-feat count.',
     ),
   ],
 } satisfies Record<string, DetailedFeature[]>
@@ -850,12 +907,12 @@ const items = {
       'Picked-up items reach Inventory but do not yet offer the final player action.',
     ),
     entry(
-      'recovery',
+      'playtest',
       'Found-item actions',
-      'ProjectMordecai issue #36',
+      'ProjectMordecai PR #96',
       'gear-weapon-effects',
       'Weapon effects',
-      'Configured weapon effects do not currently reach the ability system.',
+      'Equipped weapon tags and configured effects reach the authoritative player ability system and cleanly refresh on swap or teardown.',
     ),
     entry(
       'planned',
@@ -1103,12 +1160,23 @@ const world = {
     ),
     ...entries(
       'recovery',
-      'Open control and camera gaps',
-      ['ProjectMordecai issues #26, #33, #34, and #85'],
+      'Open wall-visibility gap',
+      ['ProjectMordecai issue #26'],
       [
-        ['world-gamepad-move', 'Gamepad movement', 'Invalid stick key names and a current jump-mode bug block full acceptance.'],
-        ['world-facing', 'Mouse and right-stick facing', 'Facing remains pinned instead of following aim.'],
         ['world-wall-visibility', 'Player visibility behind near walls', 'No cutaway or fade keeps the player visible near foreground walls.'],
+      ],
+    ),
+    ...entries(
+      'playtest',
+      'Recovered controls and camera',
+      [
+        'stories/done/US-098-recovery-facing-and-aim.md',
+        'stories/done/US-119-recovery-gamepad-a-jump.md',
+        'ProjectMordecai PRs #118, #119, and #139',
+      ],
+      [
+        ['world-gamepad-move', 'Gamepad movement', 'Left-stick movement, L3 sprint, and Gamepad A jump pass packaged real-input checks.'],
+        ['world-facing', 'Mouse and right-stick facing', 'Physical mouse and right-stick aim rotate the character while the diorama camera stays fixed.'],
       ],
     ),
   ],
@@ -1157,12 +1225,22 @@ const world = {
     ),
   ],
   'Six-biome journey': [
+    entry(
+      'playtest',
+      'Implemented terrain foundation',
+      [
+        'stories/done/US-120-verdant-wilds-v3-tile-import.md',
+        'ProjectMordecai PR #132',
+      ],
+      'biome-verdant',
+      'Verdant Wilds',
+      'Seventeen cooked meshes, sampled textures, materials, ramps, cliffs, and pond banks pass a dedicated packaged traversal fixture; this is not a production biome cell.',
+    ),
     ...entries(
       'planned',
       'Biomes',
       'Specs/world_design_v1.md',
       [
-        ['biome-verdant', 'Verdant Wilds', 'A lush region about denial, overgrowth, and hidden decay.'],
         ['biome-searing', 'Searing Expanse', 'A desert of buried cities and machinery about control.'],
         ['biome-mire', 'Mire of Echoes', 'A foggy submerged region about avoidance.'],
         ['biome-crystal', 'Crystal Caverns', 'A frozen-time crystal region about preservation.'],
@@ -1257,9 +1335,10 @@ const enemies = {
         'stories/in-progress/US-085-recovery-frontliner-content.md',
         'stories/done/US-084-recovery-enemy-attack-path.md',
         'stories/done/US-092-recovery-enemy-indicators.md',
+        'ProjectMordecai PR #154 — US-123 (story file absent on a5af5576)',
       ],
       [
-        ['enemy-frontliner', 'Frontliner', 'A visible 200-health red placeholder that closes distance and attacks.'],
+        ['enemy-frontliner', 'Frontliner', 'A visible 200-health red placeholder that closes distance, attacks, and participates in the posture-break runtime.'],
         ['enemy-basic-slash', 'Basic Slash', 'A readable melee profile that can damage and kill the player.'],
         ['enemy-aggro', 'Aggro and approach', 'Frontliners detect the player and move into profile-derived range.'],
         ['enemy-health-indicator', 'Enemy health indicator', 'One always-on red bar per living enemy.'],

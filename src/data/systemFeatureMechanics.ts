@@ -329,6 +329,276 @@ const weapons: Record<string, FeatureMechanics> = {
   ),
 }
 
+const combatRuntime: Record<string, FeatureMechanics> = {
+  directionalDefense: {
+    summary:
+      'Block and parry now resolve against a configurable ground-plane arc centred on aim-driven actor facing.',
+    groups: [
+      {
+        title: 'Directional rules',
+        items: [
+          item(
+            'Unshielded arc',
+            'The default 120° arc accepts hits at 0° and 59°; hits at 61° or from behind land unblocked.',
+            'playtest',
+          ),
+          item(
+            'Shield widening',
+            'Shield data can widen the arc; tunable defaults are 150° for buckler, 180° for standard, and 210° for tower shields.',
+            'implemented',
+          ),
+          item(
+            'Shared block/parry rule',
+            'Parry uses the same effective arc, and an out-of-arc hit does not consume the parry as a success.',
+            'playtest',
+          ),
+          item(
+            'Projectile direction',
+            'Projectiles use source/origin, with inverse flattened velocity as the coincident-source fallback.',
+            'implemented',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'stories/done/US-121-recovery-directional-block-and-parry.md',
+      'ProjectMordecai PR #140',
+    ],
+  },
+  dodge: {
+    summary:
+      'Dodge is a tier-scaled movement defense with a success-gated perfect window and profile-gated attack-Recovery cancellation.',
+    groups: [
+      {
+        title: 'Travel and timing',
+        items: [
+          item(
+            'Tier-scaled travel',
+            'Green, Yellow, Red, and Exhausted settle at 500, 400, 300, and 200 cm respectively on unobstructed ground.',
+            'playtest',
+          ),
+          item(
+            'Invulnerability',
+            'The configured dodge protection lasts 400 ms.',
+            'implemented',
+          ),
+          item(
+            'Perfect window',
+            'Evading a real hit in the first 150 ms grants one 10-stamina refund, one perfect-action event, and “Perfect Dodge!” feedback.',
+            'playtest',
+          ),
+          item(
+            'Recovery cancel',
+            'A profile-gated light-attack Recovery can end before Dodge activates; committed phases and heavy attacks cannot overlap it.',
+            'playtest',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'stories/done/US-125-attack-cancel-and-dodge-fixes.md',
+      'ProjectMordecai PR #161',
+    ],
+  },
+  stamina: {
+    summary:
+      'The PlayerState-owned ability system is authoritative for stamina regeneration, tiers, sprint drain, and combat scaling.',
+    groups: [
+      {
+        title: 'Regeneration and tiers',
+        items: [
+          item(
+            'Central spend delay',
+            'Every authoritative decrease restarts one regeneration delay; death pauses regeneration and respawn restores full stamina.',
+            'playtest',
+          ),
+          item(
+            'Exclusive tier tags',
+            'Exactly one Green, Yellow, Red, or Exhausted tag follows current and maximum stamina.',
+            'playtest',
+          ),
+          item(
+            'Tier multipliers',
+            'Green, Yellow, Red, and Exhausted use 1.25, 1.0, 0.75, and 0.5 for melee, dodge, and block effects.',
+            'playtest',
+          ),
+          item(
+            'No action gate',
+            'Attack, dodge, block, rooted break-free, and sprint remain available at low or zero stamina.',
+            'playtest',
+          ),
+        ],
+      },
+      {
+        title: 'Sprint',
+        items: [
+          item(
+            'Moving drain',
+            'Sprint drains only while toggled and moving above 10% of base walk speed.',
+            'playtest',
+          ),
+          item(
+            'Speed',
+            'Sprint remains 1.5× base walk speed at every tier, including zero stamina.',
+            'playtest',
+          ),
+          item(
+            'Cleanup',
+            'The sprint state clears after the stopped grace or immediately on defense, control, death, respawn, and ASC lifecycle interruptions.',
+            'implemented',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'stories/done/US-122-stamina-runtime.md',
+      'ProjectMordecai PRs #144 and #147',
+    ],
+  },
+  enemyPosture: {
+    summary:
+      'Enemy posture now drives authoritative interruption, vulnerability, riposte, knockdown, and recovery.',
+    groups: [
+      {
+        title: 'Enemy opening',
+        items: [
+          item(
+            'Posture break',
+            'Melee, projectile, parry, and perfect-block posture damage can interrupt an attack and apply a 1.5-second stagger.',
+            'playtest',
+          ),
+          item(
+            'Vulnerability',
+            'Stagger and riposte use a non-stacking 1.5× health-damage multiplier with a critical presentation.',
+            'playtest',
+          ),
+          item(
+            'Riposte',
+            'Parried and Riposte last one second; one landed player-melee swing consumes the opening once per target.',
+            'playtest',
+          ),
+          item(
+            'Knockdown',
+            'Forty actual health damage during the opening escalates to a two-second 2× KnockedDown state.',
+            'playtest',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'ProjectMordecai PR #154 — US-123 (story file absent on a5af5576)',
+    ],
+  },
+  playerPosture: {
+    summary:
+      'The shared posture runtime applies player-facing control lock, vulnerability, knockdown, recovery, and HUD feedback.',
+    groups: [
+      {
+        title: 'Player break flow',
+        items: [
+          item(
+            'PostureBroken',
+            'At zero posture, control and active non-passive abilities lock for 1.5 seconds while incoming health damage is multiplied by 1.5.',
+            'playtest',
+          ),
+          item(
+            'KnockedDown',
+            'Forty hostile health damage during the break replaces it with a two-second state and a 2× incoming-health multiplier.',
+            'playtest',
+          ),
+          item(
+            'Recovery',
+            'Expiry restores posture and control; death and respawn clear break, knockdown, parry, and riposte states.',
+            'playtest',
+          ),
+          item(
+            'Remote-client evidence',
+            'Authority-only mutation is implemented, but no two-client packaged harness verifies remote observation.',
+            'unspecified',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'stories/done/US-124-player-posture-break-and-vulnerability.md',
+      'ProjectMordecai PR #158',
+    ],
+  },
+  spellPoints: {
+    summary:
+      'Spell Points use one authoritative periodic GAS effect plus an immediate respawn refill.',
+    groups: [
+      {
+        title: 'Recovery rules',
+        items: [
+          item(
+            'Base rate',
+            'Regenerate 0.25 SP per second multiplied by SpellPointsRegenMultiplier, with one-second periodic ticks and MaxSP clamping.',
+            'playtest',
+          ),
+          item(
+            'Dead and Silenced',
+            'Regeneration pauses while either state is present and resumes afterward.',
+            'playtest',
+          ),
+          item(
+            'Cursed',
+            'Cursed applies the existing -0.5 regeneration multiplier, halving recovery.',
+            'implemented',
+          ),
+          item(
+            'Respawn',
+            'Respawn immediately restores Spell Points to MaxSP; fresh MaxSP remains 10.',
+            'playtest',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'stories/done/US-090-recovery-spell-point-budget.md',
+      'ProjectMordecai PR #165',
+    ],
+  },
+  tinTally: {
+    summary:
+      'The packaged combat HUD uses the cooked Tin Tally foundation and final-map widgets in both themes.',
+    groups: [
+      {
+        title: 'Delivered HUD',
+        items: [
+          item(
+            'Gauge plate',
+            'Health, stamina, posture, and tokenized Spell Points use the final Tin Tally map and live bindings.',
+            'playtest',
+          ),
+          item(
+            'Spell slots',
+            'Four 78×78 Q / E / R / 1 slots display their bound GAS cooldown shutters and countdowns.',
+            'playtest',
+          ),
+          item(
+            'Context feedback',
+            'Named status chips, exact combat callouts, live combo text, prompt, weapon plate, and low-health frame are packaged.',
+            'playtest',
+          ),
+          item(
+            'Themes',
+            'Diorama and High Contrast use cooked fonts, primitives, glyphs, tally art, pattern fill, and runtime theme switching.',
+            'playtest',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'stories/done/US-102-tin-tally-theme-runtime.md',
+      'stories/done/US-103-tin-tally-foundation-assets.md',
+      'stories/done/US-105-tin-tally-core-hud.md',
+      'stories/done/US-106-tin-tally-status-feedback.md',
+      'ProjectMordecai PRs #120, #121, #125, and #127',
+    ],
+  },
+}
+
 function spell(
   summary: string,
   behavior: MechanicItem[],
@@ -657,16 +927,16 @@ const milestoneSpellRanks: Record<string, RankDescriptions> = {
 
 const spells: Record<string, FeatureMechanics> = {
   fireball: spell(
-    'A designed projectile spell whose current packaged path is broken; its skill-sheet identity also conflicts with implementation.',
+    'A packaged projectile spell with visible delivery and damage; its skill-sheet identity still conflicts with implementation.',
     [
       item('Implemented Rank 1 profile', 'Spawn one configurable projectile in the aim direction; on hit, apply fire damage equal to Spell Power.', 'implemented'),
       item('Default projectile setup', 'Speed 2,000 cm/s, lifetime 3 seconds, radius 30 cm; values remain configurable in the Spell DataAsset.', 'implemented'),
       item('Arena DataAsset', '3 SP; 2-second cooldown; 0.2-second windup, 0.3-second cast, 0.3-second recovery; power 25; range 1,500; slow while casting.', 'implemented'),
-      item('Current recovery gap', 'The packaged cast spends SP but does not currently spawn a projectile or deal damage.', 'broken'),
+      item('Packaged delivery', 'Real Q input spends SP, spawns a visible projectile, and damages the retained target within the acceptance window.', 'playtest'),
       item('Design conflict', 'The skill sheet calls Rank 1 a channel of multiple force projectiles; that text does not match the implemented fire projectile.', 'unspecified'),
     ],
     milestoneSpellRanks.fireball,
-    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/backlog/US-087-recovery-fireball-and-blink.md', 'Specs/skill_sheet_v1.1.md'],
+    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/done/US-087-recovery-fireball-and-blink.md', 'Specs/skill_sheet_v1.1.md'],
   ),
   cone: spell(
     'A cold-damage cone with authored milestone upgrades but a corrupted Rank 1 skill-sheet row.',
@@ -689,16 +959,16 @@ const spells: Record<string, FeatureMechanics> = {
     ['stories/done/US-020-damage-spells.md', 'Specs/skill_sheet_v1.1.md'],
   ),
   stone: spell(
-    'A timed self-buff granting flat damage reduction, with future interruption, reflection, and shatter milestones.',
+    'A packaged timed self-buff granting flat damage reduction, with future interruption, reflection, and shatter milestones.',
     [
       item('Implemented Rank 1 profile', 'Apply a timed Stone Skin effect granting configurable flat damage reduction.', 'implemented'),
       item('Arena DataAsset', '4 SP; 15-second cooldown; 0.3-second windup, 0.5-second cast, 0.3-second recovery; BasePower 50; 10-second duration; rooted while casting.', 'implemented'),
       item('Defensive-model conflict', 'US-020 treats BasePower as flat DamageReduction, while US-057 labels the arena value as shield HP.', 'unspecified'),
       item('Expiry', 'The status tag and damage reduction end when the configured duration expires.', 'implemented'),
-      item('Current presentation gap', 'The packaged status indicator can show only “Status” instead of the spell name.', 'broken'),
+      item('Packaged status chip', 'The Tin Tally HUD shows the distinct “Stone Skin” name and remaining duration.', 'playtest'),
     ],
     milestoneSpellRanks.stone,
-    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'ProjectMordecai issue #21', 'Specs/skill_sheet_v1.1.md'],
+    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/done/US-106-tin-tally-status-feedback.md', 'Specs/skill_sheet_v1.1.md'],
   ),
   blink: spell(
     'Near-instant aim-direction teleport with collision clamping and brief invulnerability.',
@@ -706,10 +976,10 @@ const spells: Record<string, FeatureMechanics> = {
       item('Implemented Rank 1 profile', 'Teleport forward by configured Range; clamp before walls using a line trace and safety buffer.', 'implemented'),
       item('Defense window', 'Apply brief invulnerability after teleport; the documented default is 0.2 seconds.', 'implemented'),
       item('Arena DataAsset', '2 SP; 4-second cooldown; no windup or cast time; 0.2-second recovery; range 500; free movement.', 'implemented'),
-      item('Current recovery gap', 'The packaged cast can spend SP without moving when an enemy blocks the route.', 'broken'),
+      item('Packaged delivery', 'Real E input moves past a pawn, spends SP only after positive movement, and removes Invulnerable within the acceptance window.', 'playtest'),
     ],
     fullSpellRanks.blink,
-    ['stories/done/US-021-utility-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/backlog/US-087-recovery-fireball-and-blink.md', 'Specs/new_spells_proposal.md'],
+    ['stories/done/US-021-utility-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/done/US-087-recovery-fireball-and-blink.md', 'Specs/new_spells_proposal.md'],
   ),
   sleep: spell(
     'Single-target action lockout that ends immediately when the sleeping target takes damage.',
@@ -1000,6 +1270,82 @@ function biome(
 }
 
 const world: Record<string, FeatureMechanics> = {
+  verdantTiles: {
+    summary:
+      'A deterministic, cooked 17-piece terrain kit proves the Verdant Wilds visual and traversal foundation; the region theme, encounters, and unlock remain design targets.',
+    groups: [
+      {
+        title: 'Imported content',
+        items: [
+          item(
+            'Ready mesh set',
+            'Exactly 17 approved static meshes are imported with catalog bounds, pivots, unit scale, Nanite, and preserved simple collision.',
+            'playtest',
+          ),
+          item(
+            'Terrain materials',
+            'One master terrain material, four required instances, and 12 sampled shared textures are cooked and assigned by imported slot name.',
+            'playtest',
+          ),
+          item(
+            'Traversal fixture',
+            'A dedicated packaged map proves both ramps, a 200 cm cliff, shallow pond traversal, and three deep-bank blockers with real input.',
+            'playtest',
+          ),
+          item(
+            'Production-cell boundary',
+            'The fixture does not implement a world cell, biome graph, encounters, gates, props, foliage, or campaign progression.',
+            'unspecified',
+          ),
+        ],
+      },
+      {
+        title: 'Theme and discoveries',
+        items: [
+          item(
+            'Emotional theme',
+            'Denial — “Everything is fine.”',
+            'designed',
+          ),
+          item(
+            'Environment',
+            'Lush growth, unnatural repetition, and overgrown ruins overtaking ancient machines.',
+            'designed',
+          ),
+        ],
+      },
+      {
+        title: 'Encounters and boss',
+        items: [
+          item(
+            'Standard enemies',
+            'No standard enemy family is named for this biome.',
+            'unspecified',
+          ),
+          item('Boss', 'Thorn Guardian.', 'designed'),
+          item(
+            'Boss mechanics',
+            'Regeneration, barriers, and overgrowth traps.',
+            'designed',
+          ),
+        ],
+      },
+      {
+        title: 'World unlock',
+        items: [
+          item(
+            'Explosives',
+            'Designed to break barriers and reveal hidden decay; acquisition and limits remain unspecified.',
+            'designed',
+          ),
+        ],
+      },
+    ],
+    sources: [
+      'stories/done/US-120-verdant-wilds-v3-tile-import.md',
+      'ProjectMordecai PR #132',
+    ],
+  },
   verdant: biome(
     'Lush opening region whose repeated beauty hides unnatural decay.',
     'Denial — “Everything is fine.”',
@@ -1212,6 +1558,26 @@ export const featureMechanicsById: Record<string, FeatureMechanics> = {
   ...aliases(weapons.throwables, ['combat-throwables', 'gear-throwables']),
   ...aliases(weapons.wands, ['combat-wands', 'gear-wands']),
 
+  ...aliases(combatRuntime.directionalDefense, [
+    'combat-block',
+    'combat-parry',
+    'combat-perfect-block',
+  ]),
+  ...aliases(combatRuntime.dodge, [
+    'combat-dodge',
+    'combat-perfect-dodge',
+  ]),
+  'combat-tiered-stamina': combatRuntime.stamina,
+  ...aliases(combatRuntime.enemyPosture, [
+    'combat-posture-break',
+    'combat-stagger',
+    'combat-riposte',
+    'enemy-posture-runtime',
+  ]),
+  'combat-stability': combatRuntime.playerPosture,
+  'combat-spell-points': combatRuntime.spellPoints,
+  'feedback-hud-polish': combatRuntime.tinTally,
+
   ...aliases(spells.fireball, ['spell-fireball', 'skill-fireball']),
   ...aliases(spells.cone, ['spell-cone-of-cold', 'skill-cone-cold']),
   ...aliases(spells.missile, ['spell-magic-missile', 'skill-magic-missile']),
@@ -1243,7 +1609,7 @@ export const featureMechanicsById: Record<string, FeatureMechanics> = {
     'building-tier-masterwork',
   ]),
 
-  'biome-verdant': world.verdant,
+  'biome-verdant': world.verdantTiles,
   'biome-searing': world.searing,
   'biome-mire': world.mire,
   'biome-crystal': world.crystal,
@@ -1262,4 +1628,6 @@ export const featureMechanicsById: Record<string, FeatureMechanics> = {
   'boss-crystal-seer': bosses.crystal,
   'boss-tempest-ascendant': bosses.tempest,
   'boss-lich-king': bosses.lich,
+
+  'enemy-frontliner': combatRuntime.enemyPosture,
 }

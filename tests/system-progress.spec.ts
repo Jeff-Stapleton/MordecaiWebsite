@@ -364,7 +364,7 @@ test('weapons and spells expose individual statuses and evidence', async ({
   }
 })
 
-test('five-state bars stay consistent in both themes and broken evidence wins', async ({
+test('five-state bars stay consistent in both themes and current evidence wins', async ({
   page,
 }) => {
   const themeColors = {
@@ -445,11 +445,11 @@ test('five-state bars stay consistent in both themes and broken evidence wins', 
   const fireball = magic.locator('.feature-item').filter({
     has: page.getByRole('heading', { name: 'Fireball', exact: true }),
   })
-  await expect(fireball).toHaveAttribute('data-progress-state', 'broken')
+  await expect(fireball).toHaveAttribute('data-progress-state', 'done')
   await fireball.locator('summary').click()
   await expect(
-    fireball.locator('.mechanic-item').filter({ hasText: 'Current recovery gap' }),
-  ).toHaveAttribute('data-progress-state', 'broken')
+    fireball.locator('.mechanic-item').filter({ hasText: 'Packaged delivery' }),
+  ).toHaveAttribute('data-progress-state', 'done')
   await expect(
     fireball
       .locator('.mechanic-item')
