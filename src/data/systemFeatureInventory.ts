@@ -1160,8 +1160,8 @@ const world = {
     ),
     ...entries(
       'recovery',
-      'Open control and camera gaps',
-      ['ProjectMordecai issues #26, #33, #34, and #85'],
+      'Open wall-visibility gap',
+      ['ProjectMordecai issue #26'],
       [
         ['world-wall-visibility', 'Player visibility behind near walls', 'No cutaway or fade keeps the player visible near foreground walls.'],
       ],

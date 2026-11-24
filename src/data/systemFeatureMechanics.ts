@@ -936,7 +936,7 @@ const spells: Record<string, FeatureMechanics> = {
       item('Design conflict', 'The skill sheet calls Rank 1 a channel of multiple force projectiles; that text does not match the implemented fire projectile.', 'unspecified'),
     ],
     milestoneSpellRanks.fireball,
-    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/backlog/US-087-recovery-fireball-and-blink.md', 'Specs/skill_sheet_v1.1.md'],
+    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/done/US-087-recovery-fireball-and-blink.md', 'Specs/skill_sheet_v1.1.md'],
   ),
   cone: spell(
     'A cold-damage cone with authored milestone upgrades but a corrupted Rank 1 skill-sheet row.',
@@ -968,7 +968,7 @@ const spells: Record<string, FeatureMechanics> = {
       item('Packaged status chip', 'The Tin Tally HUD shows the distinct “Stone Skin” name and remaining duration.', 'playtest'),
     ],
     milestoneSpellRanks.stone,
-    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'ProjectMordecai issue #21', 'Specs/skill_sheet_v1.1.md'],
+    ['stories/done/US-020-damage-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/done/US-106-tin-tally-status-feedback.md', 'Specs/skill_sheet_v1.1.md'],
   ),
   blink: spell(
     'Near-instant aim-direction teleport with collision clamping and brief invulnerability.',
@@ -979,7 +979,7 @@ const spells: Record<string, FeatureMechanics> = {
       item('Packaged delivery', 'Real E input moves past a pawn, spends SP only after positive movement, and removes Invulnerable within the acceptance window.', 'playtest'),
     ],
     fullSpellRanks.blink,
-    ['stories/done/US-021-utility-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/backlog/US-087-recovery-fireball-and-blink.md', 'Specs/new_spells_proposal.md'],
+    ['stories/done/US-021-utility-spells.md', 'stories/done/US-057-playable-magic-arena.md', 'stories/done/US-087-recovery-fireball-and-blink.md', 'Specs/new_spells_proposal.md'],
   ),
   sleep: spell(
     'Single-target action lockout that ends immediately when the sleeping target takes damage.',

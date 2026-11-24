@@ -101,7 +101,7 @@ const progressOverviewBySystem = {
           'stories/done/US-078-playable-weapon-arena.md',
           'stories/done/US-098-recovery-facing-and-aim.md',
           'stories/done/US-125-attack-cancel-and-dodge-fixes.md',
-          'ProjectMordecai issues #34 and #36',
+          'ProjectMordecai PRs #96 and #139',
         ],
         features: [
           {
@@ -171,7 +171,7 @@ const progressOverviewBySystem = {
           'stories/done/US-088-recovery-spell-cooldowns-hud.md',
           'stories/done/US-090-recovery-spell-point-budget.md',
           'stories/done/US-106-tin-tally-status-feedback.md',
-          'ProjectMordecai issues #20, #21, #25, and #35',
+          'ProjectMordecai PRs #87, #91, #97, and #138',
         ],
         features: [
           {
@@ -595,7 +595,7 @@ const progressOverviewBySystem = {
         sources: [
           'stories/done/US-001-project-foundation.md',
           'stories/done/US-100-recovery-playtest-test-maps.md',
-          'ProjectMordecai issues #26, #33, and #34',
+          'ProjectMordecai issue #26',
         ],
         features: [
           {
