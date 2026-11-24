@@ -29,24 +29,24 @@ export const systems: SystemPage[] = [
     oneLiner:
       'Read the fight, manage stamina, and turn precise defense into decisive openings.',
     accent: 'var(--tt-danger)',
-    highlights: ['Twin-stick control', 'Tiered stamina', 'Posture openings'],
+    highlights: ['Aim-driven control', 'Authoritative stamina', 'Posture openings'],
     progress: progressBySystem.combat,
     sections: [
       {
         title: 'Aim while you move',
-        body: 'Movement and aim are independent beneath a fixed diorama camera. Light and heavy weapon chains, throws, and spells share the same readable combat space.',
+        body: 'Physical mouse and right-stick aim set facing independently from camera-relative movement beneath a fixed diorama camera.',
       },
       {
         title: 'Spend your footing',
-        body: 'Stamina moves through Green, Yellow, Red, and Exhausted tiers. Each tier changes effectiveness, making resource pressure part of every decision.',
+        body: 'Authoritative stamina moves through Green, Yellow, Red, and Exhausted tiers, changing melee damage, dodge travel, block stability, and sprint pressure without blocking actions.',
       },
       {
         title: 'Defense creates offense',
-        body: 'Perfect dodges, perfect blocks, parries, and posture breaks provide direct feedback. Breaking enemy posture creates stagger, knockdown, and critical openings.',
+        body: 'Directional blocks and parries reward facing. Perfect defense and posture damage create stagger, riposte, knockdown, and vulnerability for enemies and players.',
       },
       {
         title: 'Magic in the fight',
-        body: 'Spell Points are discrete and upcasting doubles a spell’s cost. Fireball, Blink, Stone Skin, and Restoration are the current core spell set.',
+        body: 'Fireball, Blink, Stone Skin, and Restoration use bound cooldown slots. Spell Points recover slowly, pause under Dead or Silenced, halve under Cursed, and refill on respawn.',
       },
     ],
   },
@@ -63,11 +63,11 @@ export const systems: SystemPage[] = [
     sections: [
       {
         title: 'Nine attributes',
-        body: 'Strength, Dexterity, Endurance, Constitution, Resolve, Discipline, Intelligence, Wisdom, and Charisma shape physical, resilience, and magical builds.',
+        body: 'Strength through Charisma shape physical, resilience, and magical builds, and the live Character tab now shows all nine with modifiers and resources.',
       },
       {
         title: 'Everything practiced can matter',
-        body: 'The current catalog spans weapon, defense and armor, movement and exploration, utility and interaction, and magic categories.',
+        body: 'The packaged Skills tab exposes the ordered 42-skill catalog across weapon, defense and armor, movement and exploration, utility, and magic categories.',
       },
       {
         title: 'Techniques mark mastery',
@@ -75,7 +75,7 @@ export const systems: SystemPage[] = [
       },
       {
         title: 'Feats are earned',
-        body: 'Common, Rare, and Legendary feats unlock through gameplay achievements rather than a pick list. Rare and Legendary feats also carry drawbacks.',
+        body: 'The connected Feats tab reports earned unlocks. Common, Rare, and Legendary content and tradeoffs remain a design target beyond the current framework.',
       },
     ],
   },
@@ -150,7 +150,7 @@ export const systems: SystemPage[] = [
     sections: [
       {
         title: 'Six compact biomes',
-        body: 'The Verdant Wilds, Searing Expanse, Mire of Echoes, Crystal Caverns, Storm Peaks, and Withered Kingdom each carry their own terrain, pressure, and boss.',
+        body: 'The Verdant Wilds now has a cooked 17-piece terrain kit and traversal fixture. Complete production cells for all six biomes, their encounters, and bosses remain ahead.',
       },
       {
         title: 'A world made to be reread',
@@ -187,7 +187,7 @@ export const systems: SystemPage[] = [
       },
       {
         title: 'Telegraphs respect the camera',
-        body: 'Attacks are designed to read from the fixed diorama view. Silhouette, timing, and position carry information before effects add emphasis.',
+        body: 'Attacks read from the fixed diorama view, while current enemies expose posture breaks, riposte timing, knockdown, and recovery through the combat HUD.',
       },
       {
         title: 'Six named bosses',
