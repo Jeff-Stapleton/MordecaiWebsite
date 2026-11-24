@@ -485,7 +485,9 @@ const combatRuntime: Record<string, FeatureMechanics> = {
         ],
       },
     ],
-    sources: ['ProjectMordecai PR #154 — US-123'],
+    sources: [
+      'ProjectMordecai PR #154 — US-123 (story file absent on a5af5576)',
+    ],
   },
   playerPosture: {
     summary:
@@ -588,10 +590,11 @@ const combatRuntime: Record<string, FeatureMechanics> = {
       },
     ],
     sources: [
+      'stories/done/US-102-tin-tally-theme-runtime.md',
       'stories/done/US-103-tin-tally-foundation-assets.md',
       'stories/done/US-105-tin-tally-core-hud.md',
       'stories/done/US-106-tin-tally-status-feedback.md',
-      'ProjectMordecai PRs #121, #125, and #127',
+      'ProjectMordecai PRs #120, #121, #125, and #127',
     ],
   },
 }

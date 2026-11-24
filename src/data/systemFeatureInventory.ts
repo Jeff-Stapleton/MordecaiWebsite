@@ -315,7 +315,7 @@ const combat = {
       'Rank 1 launch spells',
       [
         'stories/done/US-087-recovery-fireball-and-blink.md',
-        'ProjectMordecai PRs #87 and #89',
+        'ProjectMordecai PRs #87, #89, and #90',
       ],
       [
         [
@@ -508,7 +508,7 @@ const combat = {
       [
         'stories/done/US-088-recovery-spell-cooldowns-hud.md',
         'stories/done/US-106-tin-tally-status-feedback.md',
-        'ProjectMordecai PRs #123 and #138',
+        'ProjectMordecai PRs #97, #123, and #138',
       ],
       [
         [
@@ -535,9 +535,10 @@ const combat = {
       'playtest',
       'Tin Tally combat feedback',
       [
+        'stories/done/US-102-tin-tally-theme-runtime.md',
         'stories/done/US-103-tin-tally-foundation-assets.md',
         'stories/done/US-105-tin-tally-core-hud.md',
-        'ProjectMordecai PRs #121 and #125',
+        'ProjectMordecai PRs #120, #121, and #125',
       ],
       'feedback-hud-polish',
       'Tin Tally HUD foundation and final map',
@@ -1334,7 +1335,7 @@ const enemies = {
         'stories/in-progress/US-085-recovery-frontliner-content.md',
         'stories/done/US-084-recovery-enemy-attack-path.md',
         'stories/done/US-092-recovery-enemy-indicators.md',
-        'ProjectMordecai PR #154 — US-123',
+        'ProjectMordecai PR #154 — US-123 (story file absent on a5af5576)',
       ],
       [
         ['enemy-frontliner', 'Frontliner', 'A visible 200-health red placeholder that closes distance, attacks, and participates in the posture-break runtime.'],

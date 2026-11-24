@@ -207,6 +207,7 @@ const progressOverviewBySystem = {
         sources: [
           'stories/done/US-086-recovery-death-screen-kill-counter.md',
           'stories/done/US-092-recovery-enemy-indicators.md',
+          'stories/done/US-102-tin-tally-theme-runtime.md',
           'stories/done/US-105-tin-tally-core-hud.md',
           'stories/done/US-106-tin-tally-status-feedback.md',
         ],
@@ -734,7 +735,7 @@ const progressOverviewBySystem = {
           'stories/in-progress/US-085-recovery-frontliner-content.md',
           'stories/done/US-084-recovery-enemy-attack-path.md',
           'stories/done/US-092-recovery-enemy-indicators.md',
-          'ProjectMordecai PR #154 — US-123',
+          'ProjectMordecai PR #154 — US-123 (story file absent on a5af5576)',
         ],
         features: [
           {
